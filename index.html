@@ -1,161 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Idea Slot Machine</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Mind Reader</title>
 
-  <style>
-    :root {
-      --bg: #ffffff;
-      --card: #f4f6f8;
-      --text: #111827;
-      --muted: #6b7280;
-      --accent: #6366f1;
-      --glow: rgba(99,102,241,0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      color: var(--text);
-    }
-
-    .container {
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-    }
-
-    .title {
-      font-size: 26px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 24px;
-    }
-
-    .slot {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 28px 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-      margin-bottom: 24px;
-      min-height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease;
-    }
-
-    .idea {
-      font-size: 18px;
-      font-weight: 500;
-      line-height: 1.4;
-    }
-
-    .spin-btn {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 16px;
-      font-size: 18px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--accent);
-      box-shadow: 0 0 0 var(--glow);
-      cursor: pointer;
-      transition: box-shadow 0.3s ease, transform 0.15s ease;
-    }
-
-    .spin-btn:active {
-      transform: scale(0.97);
-    }
-
-    .spin-btn.glow {
-      box-shadow: 0 0 28px var(--glow);
-    }
-
-    .footer {
-      margin-top: 18px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-  </style>
+<style>
+:root{
+  --bg:#ffffff;
+  --card:#f4f6f8;
+  --text:#111827;
+  --muted:#6b7280;
+  --accent:#6366f1;
+  --glow:rgba(99,102,241,.35);
+}
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card{
+  width:100%;
+  max-width:420px;
+  background:var(--card);
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 20px 40px rgba(0,0,0,.06);
+}
+h1{
+  margin:0 0 6px;
+  text-align:center;
+}
+.subtitle{
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:20px;
+}
+.result{
+  background:#fff;
+  border-radius:14px;
+  padding:18px;
+  min-height:120px;
+  box-shadow:0 0 0 transparent;
+  transition:.3s;
+}
+.problem{
+  font-weight:600;
+  margin-bottom:10px;
+}
+.fix{
+  color:var(--accent);
+  font-weight:600;
+}
+button{
+  width:100%;
+  margin-top:18px;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:var(--accent);
+  color:#fff;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 0 0 var(--glow);
+  transition:.3s;
+}
+button:active{
+  transform:scale(.98);
+  box-shadow:0 0 25px var(--glow);
+}
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  margin-top:14px;
+}
+</style>
 </head>
+
 <body>
+<div class="card">
+  <h1>🧠 AI Mind Reader</h1>
+  <div class="subtitle">This knows how you misuse AI</div>
 
-  <div class="container">
-    <div class="title">🎰 AI Idea Slot</div>
-    <div class="subtitle">Spin & discover your next AI idea</div>
-
-    <div class="slot">
-      <div id="idea" class="idea">
-        Tap spin to get an AI idea ✨
-      </div>
-    </div>
-
-    <button id="spin" class="spin-btn">
-      Spin AI Idea
-    </button>
-
-    <div class="footer">
-      Built for AI Store • No login • Free forever
-    </div>
+  <div class="result" id="result">
+    Tap the button. Don’t lie to yourself.
   </div>
 
-  <script>
-    const ideas = [
-      "AI tool that fixes bad prompts automatically",
-      "AI app that suggests business ideas daily",
-      "AI assistant for students who hate studying",
-      "AI that turns thoughts into content ideas",
-      "AI tool to generate startup names instantly",
-      "AI productivity coach for lazy creators",
-      "AI that explains complex topics simply",
-      "AI idea validator for beginners",
-      "AI app that suggests viral reel ideas",
-      "AI tool that improves your prompts in one click",
-      "AI system that turns ideas into workflows",
-      "AI helper for non-technical founders",
-      "AI that finds problems worth solving",
-      "AI daily idea generator for creators",
-      "AI app that trains users how to think with AI"
-    ];
+  <button onclick="readMind()">Read My AI Truth</button>
 
-    const ideaEl = document.getElementById("idea");
-    const spinBtn = document.getElementById("spin");
+  <div class="footer">
+    Built for AI Store • No login • Free forever
+  </div>
+</div>
 
-    spinBtn.addEventListener("click", () => {
-      spinBtn.classList.add("glow");
-      ideaEl.textContent = "Spinning ideas… 🎲";
+<script>
+const DATA_KEY = "ai_mind_reader_used";
 
-      let spins = 0;
-      const interval = setInterval(() => {
-        ideaEl.textContent =
-          ideas[Math.floor(Math.random() * ideas.length)];
-        spins++;
-        if (spins > 8) {
-          clearInterval(interval);
-          spinBtn.classList.remove("glow");
-        }
-      }, 80);
-    });
-  </script>
+const mindData = [
+  {p:"You are using AI like Google", f:"Start giving context, not keywords"},
+  {p:"You expect perfect output in first try", f:"Ask for rough draft first"},
+  {p:"You copy prompts without understanding", f:"Rewrite prompts in your own words"},
+  {p:"You blame AI for bad results", f:"Your input is unclear"},
+  {p:"You tool-hop too much", f:"Master one AI workflow for 7 days"},
+  {p:"You ask AI WHAT instead of HOW", f:"Ask for step-by-step process"},
+  {p:"You don’t save good prompts", f:"Create your own prompt library"},
+  {p:"You overuse long prompts", f:"Short + clear prompts work better"},
+  {p:"You never refine AI output", f:"Ask AI to improve its own answer"},
+  {p:"You want speed, not mastery", f:"Slow repetition builds skill"},
+  {p:"You use AI daily but learn nothing", f:"Ask AI to explain WHY"},
+  {p:"You chase trends blindly", f:"Adapt trends to your niche"},
+  {p:"You skip system & role prompts", f:"Always define AI’s role"},
+  {p:"You rely on one-shot answers", f:"Use multi-turn conversations"},
+  {p:"You treat AI as magic", f:"Treat it as a junior assistant"}
+];
 
+function readMind(){
+  let used = JSON.parse(localStorage.getItem(DATA_KEY) || "[]");
+
+  // reset when all used
+  if(used.length >= mindData.length){
+    used = [];
+  }
+
+  // pick unused
+  const available = mindData.filter((_,i)=>!used.includes(i));
+  const index = Math.floor(Math.random()*available.length);
+  const realIndex = mindData.indexOf(available[index]);
+
+  used.push(realIndex);
+  localStorage.setItem(DATA_KEY, JSON.stringify(used));
+
+  const item = mindData[realIndex];
+  const box = document.getElementById("result");
+
+  box.innerHTML = `
+    <div class="problem">❌ ${item.p}</div>
+    <div class="fix">✔ Fix: ${item.f}</div>
+  `;
+}
+</script>
 </body>
-  </html>
+</html>

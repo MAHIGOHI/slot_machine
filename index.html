@@ -3,113 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI Maze Hunt</title>
+<title>Core Survival</title>
 <style>
-body{
+html,body{
   margin:0;
-  background:#0b0e1a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  width:100%;
+  height:100%;
+  background:#06080f;
+  overflow:hidden;
 }
-canvas{
-  background:#11162a;
-}
+canvas{display:block;}
 </style>
 </head>
 
 <body>
-<canvas id="game" width="300" height="300"></canvas>
+<canvas id="c"></canvas>
 
 <script>
-const c = document.getElementById("game");
-const x = c.getContext("2d");
+const c=document.getElementById("c");
+const x=c.getContext("2d");
+let w,h;
+resize();
+window.onresize=resize;
 
-const size = 10;
-const tile = 30;
+let player={x:0,y:0,r:12};
+let enemies=[];
+let alive=false;
+let speed=1.2;
 
-let gameOver = false;
+function resize(){
+  w=c.width=innerWidth;
+  h=c.height=innerHeight;
+  player.x=w/2;
+  player.y=h/2;
+}
 
-let player = {x:1,y:1};
-let ai = {x:8,y:8};
+function start(){
+  enemies=[];
+  speed=1.2;
+  alive=true;
+}
 
-const walls = [
-  "##########",
-  "#........#",
-  "#.####...#",
-  "#.#..#...#",
-  "#.#..###.#",
-  "#.#......#",
-  "#.######.#",
-  "#........#",
-  "#......#.#",
-  "##########"
-];
+function spawn(){
+  const e={
+    x:Math.random()<0.5?0:w,
+    y:Math.random()*h,
+    r:8,
+  };
+  enemies.push(e);
+}
 
-function draw(){
-  for(let y=0;y<size;y++){
-    for(let x0=0;x0<size;x0++){
-      x.fillStyle = walls[y][x0]=="#" ? "#1f2440" : "#0b0e1a";
-      x.fillRect(x0*tile,y*tile,tile,tile);
+c.addEventListener("touchstart",e=>{
+  start();
+});
+
+c.addEventListener("touchmove",e=>{
+  const t=e.touches[0];
+  player.x=t.clientX;
+  player.y=t.clientY;
+});
+
+c.addEventListener("touchend",()=>{
+  alive=false;
+});
+
+function loop(){
+  x.fillStyle="rgba(6,8,15,0.35)";
+  x.fillRect(0,0,w,h);
+
+  if(alive && Math.random()<0.04) spawn();
+
+  // enemies
+  for(let i=enemies.length-1;i>=0;i--){
+    let e=enemies[i];
+    let dx=player.x-e.x;
+    let dy=player.y-e.y;
+    let d=Math.hypot(dx,dy);
+    e.x+=dx/d*speed;
+    e.y+=dy/d*speed;
+
+    if(d<player.r+e.r){
+      alive=false;
     }
+
+    x.fillStyle="#ff3355";
+    x.beginPath();
+    x.arc(e.x,e.y,e.r,0,Math.PI*2);
+    x.fill();
   }
 
   // player
-  x.fillStyle = "#4f8cff";
-  x.fillRect(player.x*tile,player.y*tile,tile,tile);
+  x.fillStyle=alive?"#4f8cff":"#888";
+  x.beginPath();
+  x.arc(player.x,player.y,player.r,0,Math.PI*2);
+  x.fill();
 
-  // ai
-  x.fillStyle = "#ff3355";
-  x.fillRect(ai.x*tile,ai.y*tile,tile,tile);
+  if(alive) speed+=0.0006;
 
-  if(gameOver){
-    x.fillStyle="#fff";
-    x.font="16px monospace";
-    x.fillText("GAME OVER",80,155);
-  }
+  requestAnimationFrame(loop);
 }
 
-function move(entity,dx,dy){
-  let nx = entity.x + dx;
-  let ny = entity.y + dy;
-  if(walls[ny][nx]=="."){
-    entity.x = nx;
-    entity.y = ny;
-  }
-}
-
-function aiMove(){
-  let dx = player.x - ai.x;
-  let dy = player.y - ai.y;
-
-  if(Math.abs(dx) > Math.abs(dy)){
-    move(ai, Math.sign(dx), 0);
-  }else{
-    move(ai, 0, Math.sign(dy));
-  }
-}
-
-function check(){
-  if(player.x===ai.x && player.y===ai.y){
-    gameOver = true;
-  }
-}
-
-document.addEventListener("keydown",e=>{
-  if(gameOver) return;
-
-  if(e.key==="w") move(player,0,-1);
-  if(e.key==="s") move(player,0,1);
-  if(e.key==="a") move(player,-1,0);
-  if(e.key==="d") move(player,1,0);
-
-  aiMove();
-  check();
-  draw();
-});
-
-draw();
+loop();
 </script>
 </body>
 </html>

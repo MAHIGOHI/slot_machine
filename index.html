@@ -1,105 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prompt Reality Checker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Signals</title>
 <style>
-body{
+html,body{
   margin:0;
-  font-family:system-ui, sans-serif;
+  height:100%;
   background:#f6f7fb;
-  color:#0f172a;
+  overflow:hidden;
+  font-family:system-ui;
 }
-.container{
-  max-width:500px;
-  margin:auto;
-  padding:16px;
-}
-h1{
-  font-size:20px;
-  margin-bottom:8px;
-}
-textarea{
-  width:100%;
-  height:140px;
-  padding:12px;
-  font-size:14px;
-  border-radius:10px;
-  border:1px solid #d1d5db;
-  resize:none;
-}
-button{
-  width:100%;
-  margin-top:12px;
-  padding:12px;
-  font-size:15px;
+#score{
+  position:fixed;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:16px;
   font-weight:600;
-  border:none;
-  border-radius:10px;
-  background:#4f46e5;
-  color:#fff;
 }
-.result{
-  margin-top:16px;
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:12px;
-  font-size:14px;
+.signal{
+  position:absolute;
+  width:60px;
+  height:60px;
+  border-radius:50%;
 }
-.warn{color:#b91c1c}
-.ok{color:#065f46}
+.real{background:#16a34a;}
+.fake{background:#dc2626;}
 </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>Prompt Reality Checker</h1>
-
-  <textarea id="prompt" placeholder="Paste your AI prompt here..."></textarea>
-  <button onclick="analyze()">Analyze Prompt</button>
-
-  <div id="output" class="result"></div>
-</div>
+<div id="score">Score: 0</div>
 
 <script>
-function analyze(){
-  const p = document.getElementById("prompt").value.toLowerCase();
-  let out = "";
+let score=0;
+let speed=1200;
 
-  if(!p.trim()){
-    document.getElementById("output").innerHTML =
-      "<span class='warn'>No prompt provided.</span>";
-    return;
-  }
+function spawn(){
+  const s=document.createElement("div");
+  const real=Math.random()>0.4;
+  s.className="signal "+(real?"real":"fake");
+  s.style.left=Math.random()*(innerWidth-60)+"px";
+  s.style.top=Math.random()*(innerHeight-120)+60+"px";
+  document.body.appendChild(s);
 
-  if(!p.includes("act as") && !p.includes("you are")){
-    out += "❌ Role not defined<br>";
-  }else{
-    out += "✅ Role defined<br>";
-  }
+  let clicked=false;
 
-  if(p.length < 40){
-    out += "❌ Prompt too short / vague<br>";
-  }else{
-    out += "✅ Prompt length acceptable<br>";
-  }
+  s.onclick=()=>{
+    clicked=true;
+    if(real){
+      score++;
+      speed=Math.max(500,speed-30);
+      update();
+      s.remove();
+    }else{
+      gameOver();
+    }
+  };
 
-  if(!p.includes("format") && !p.includes("output")){
-    out += "❌ Output format not specified<br>";
-  }else{
-    out += "✅ Output format mentioned<br>";
-  }
-
-  if(!p.includes("do not") && !p.includes("avoid")){
-    out += "⚠️ No constraints found<br>";
-  }else{
-    out += "✅ Constraints included<br>";
-  }
-
-  document.getElementById("output").innerHTML = out;
+  setTimeout(()=>{
+    if(!clicked){
+      if(real) gameOver();
+      s.remove();
+    }
+  },speed);
 }
+
+function update(){
+  document.getElementById("score").innerText="Score: "+score;
+}
+
+function gameOver(){
+  alert("Game Over\nScore: "+score);
+  location.reload();
+}
+
+setInterval(spawn,900);
 </script>
 </body>
 </html>

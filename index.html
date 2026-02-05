@@ -1,251 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Thinking Framework Generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking Engine</title>
 
-  <style>
-    :root {
-      --bg: #ffffff;
-      --card: #f5f7fb;
-      --text: #0f172a;
-      --muted: #64748b;
-      --accent: #6366f1;
-      --border: #e5e7eb;
-      --glow: rgba(99,102,241,0.35);
-    }
+<style>
+:root{
+  --bg:#ffffff;
+  --card:#f6f7fb;
+  --text:#0f172a;
+  --muted:#64748b;
+  --accent:#6366f1;
+  --glow:rgba(99,102,241,.35);
+}
 
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+*{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      color: var(--text);
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:var(--bg);
+  color:var(--text);
+  padding:20px;
+}
 
-    .container {
-      width: 100%;
-      max-width: 520px;
-    }
+.card{
+  width:100%;
+  max-width:520px;
+  background:var(--card);
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 25px 60px rgba(0,0,0,.08);
+}
 
-    .card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.08);
-      border: 1px solid var(--border);
-    }
+h1{
+  margin:0;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+}
 
-    h1 {
-      margin: 0 0 6px;
-      font-size: 24px;
-      font-weight: 700;
-      text-align: center;
-    }
+.sub{
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  margin:6px 0 20px;
+}
 
-    .subtitle {
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 22px;
-    }
+.screen{
+  background:#fff;
+  border-radius:14px;
+  padding:18px;
+  min-height:160px;
+  border:1px solid #e5e7eb;
+  white-space:pre-wrap;
+  font-size:14.5px;
+  line-height:1.6;
+}
 
-    .output-box {
-      background: #fff;
-      border-radius: 14px;
-      padding: 18px;
-      border: 1px solid var(--border);
-      min-height: 160px;
-      font-size: 14.5px;
-      line-height: 1.55;
-      white-space: pre-wrap;
-    }
+.cursor{
+  display:inline-block;
+  width:8px;
+  height:16px;
+  background:var(--accent);
+  animation:blink 1s infinite;
+  margin-left:2px;
+}
 
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 18px;
-    }
+@keyframes blink{
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:0}
+}
 
-    button {
-      flex: 1;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
+button{
+  width:100%;
+  margin-top:18px;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:600;
+  background:var(--accent);
+  color:#fff;
+  cursor:pointer;
+  box-shadow:0 12px 28px var(--glow);
+}
 
-    .generate {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 12px 28px var(--glow);
-    }
+button:active{transform:scale(.97)}
 
-    .generate:hover {
-      transform: translateY(-1px);
-    }
-
-    .copy {
-      background: #fff;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .copy:active {
-      transform: scale(0.98);
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 18px;
-    }
-  </style>
+.footer{
+  margin-top:14px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>🧠 AI Thinking Framework</h1>
-      <div class="subtitle">
-        Generate structured thinking systems to use AI effectively
-      </div>
+<div class="card">
+  <h1>🧠 Thinking Engine</h1>
+  <div class="sub">A live cognitive simulation</div>
 
-      <div id="output" class="output-box">
-        Click “Generate Framework” to reveal an AI thinking pattern.
-      </div>
-
-      <div class="actions">
-        <button class="generate" onclick="generateFramework()">
-          Generate Framework
-        </button>
-        <button class="copy" onclick="copyFramework()">
-          Copy
-        </button>
-      </div>
-    </div>
-
-    <div class="footer">
-      •AI Store•
-    </div>
+  <div id="screen" class="screen">
+    Tap Generate to activate thinking<span class="cursor"></span>
   </div>
 
-  <script>
-    const frameworks = [
-`AI THINKING PATTERN: ROLE-FIRST APPROACH
+  <button onclick="runEngine()">Generate</button>
 
-❌ Problem:
-You ask AI questions without defining its role.
+  <div class="footer">• AI Store •</div>
+</div>
 
-✅ Correct Method:
-Always assign a clear role before giving instructions.
+<script>
+const styles=[
+"First-principles reasoning",
+"Reverse thinking",
+"Systems analysis",
+"Critical deconstruction",
+"Pattern synthesis"
+];
 
-FRAMEWORK:
-1. Define the role
-2. Define the objective
-3. Add constraints
-4. Specify output format
+const lenses=[
+"like a strategist",
+"like a psychologist",
+"like an engineer",
+"like a philosopher",
+"like a product architect"
+];
 
-PROMPT TEMPLATE:
-"Act as a [role]. Your goal is [objective]. Follow these constraints: [rules]. Output in [format]."`,
+const constraints=[
+"without assumptions",
+"by challenging norms",
+"focusing only on risk",
+"ignoring popular opinion",
+"optimizing for clarity"
+];
 
-`AI THINKING PATTERN: CONSTRAINT-DRIVEN OUTPUT
+const outputs=[
+"decision blueprint",
+"thinking framework",
+"mental model",
+"execution map",
+"logic ladder"
+];
 
-❌ Problem:
-Vague prompts produce generic results.
+function pick(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
 
-✅ Correct Method:
-Clear constraints sharpen AI responses.
+function buildThought(){
+  return `
+THINKING MODE ACTIVE
 
-FRAMEWORK:
-1. Limit word count
-2. Fix tone
-3. Lock audience
-4. Restrict scope
+Reason using ${pick(styles)}
+View the problem ${pick(lenses)}
+Apply constraint: ${pick(constraints)}
 
-PROMPT TEMPLATE:
-"Explain [topic] in under [X] words, for [audience], using [tone], without mentioning [restriction]."`,
+OUTPUT REQUIRED:
+Generate a ${pick(outputs)} that:
+• avoids surface answers
+• exposes blind spots
+• forces clear decisions
 
-`AI THINKING PATTERN: INPUT → TRANSFORMATION → OUTPUT
+RULE:
+No generic advice.
+`;
+}
 
-❌ Problem:
-You ask for results without defining transformation.
+function typeText(el,text){
+  el.textContent="";
+  let i=0;
+  const speed=12+Math.random()*18;
+  const timer=setInterval(()=>{
+    el.textContent+=text[i];
+    i++;
+    if(i>=text.length) clearInterval(timer);
+  },speed);
+}
 
-✅ Correct Method:
-Tell AI how to process the input.
+function runEngine(){
+  const screen=document.getElementById("screen");
+  screen.textContent="Thinking";
+  let dots=0;
 
-FRAMEWORK:
-1. Provide raw input
-2. Define transformation logic
-3. Request final output
+  const loader=setInterval(()=>{
+    dots=(dots+1)%4;
+    screen.textContent="Thinking"+ ".".repeat(dots);
+  },300);
 
-PROMPT TEMPLATE:
-"Here is the input: [data]. Transform it by [method]. Deliver the final output as [format]."`,
-
-`AI THINKING PATTERN: EXAMPLE-LOCKING
-
-❌ Problem:
-AI misunderstands your style expectations.
-
-✅ Correct Method:
-Anchor the output using examples.
-
-FRAMEWORK:
-1. Give a reference example
-2. Explain why it is correct
-3. Ask AI to replicate the pattern
-
-PROMPT TEMPLATE:
-"Use the following example as a reference. Match its structure, clarity, and tone. Do not add extra sections."`,
-
-`AI THINKING PATTERN: FAILURE PREVENTION MODE
-
-❌ Problem:
-AI adds unnecessary explanations.
-
-✅ Correct Method:
-Explicitly block unwanted behavior.
-
-FRAMEWORK:
-1. Define task
-2. State forbidden actions
-3. Confirm scope
-
-PROMPT TEMPLATE:
-"Complete this task: [task]. Do not explain reasoning. Do not add tips. Output only the final result."`
-    ];
-
-    let used = [];
-
-    function generateFramework() {
-      if (used.length === frameworks.length) used = [];
-
-      let index;
-      do {
-        index = Math.floor(Math.random() * frameworks.length);
-      } while (used.includes(index));
-
-      used.push(index);
-      document.getElementById("output").textContent = frameworks[index];
-    }
-
-    function copyFramework() {
-      const text = document.getElementById("output").textContent;
-      navigator.clipboard.writeText(text);
-    }
-  </script>
+  setTimeout(()=>{
+    clearInterval(loader);
+    typeText(screen,buildThought());
+  },700+Math.random()*800);
+}
+</script>
 </body>
 </html>

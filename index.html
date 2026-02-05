@@ -3,46 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Field</title>
+<title>Reality</title>
 <style>
 html,body{
   margin:0;
   height:100%;
-  background:#ffffff;
-  font-family:system-ui;
+  background:#eef1ff;
+  overflow:hidden;
 }
-#box{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100%;
-  font-size:22px;
-  color:#111;
-  text-align:center;
-  padding:20px;
+div{
+  position:absolute;
+  width:20px;
+  height:20px;
+  background:#4f46e5;
 }
 </style>
 </head>
 
 <body>
-<div id="box">Tap anywhere</div>
-
 <script>
-const thoughts=[
-  "You paused.",
-  "You reacted.",
-  "You waited.",
-  "You rushed.",
-  "You avoided.",
-  "You chose comfort.",
-  "You chose speed.",
-  "You chose silence."
-];
+for(let i=0;i<200;i++){
+  let d=document.createElement("div");
+  d.style.left=Math.random()*innerWidth+"px";
+  d.style.top=Math.random()*innerHeight+"px";
+  document.body.appendChild(d);
+}
 
-document.body.onclick=()=>{
-  document.getElementById("box").textContent=
-    thoughts[Math.floor(Math.random()*thoughts.length)];
-};
+setInterval(()=>{
+  document.querySelectorAll("div").forEach(el=>{
+    el.style.left=Math.random()*innerWidth+"px";
+    el.style.top=Math.random()*innerHeight+"px";
+  });
+},800);
 </script>
 </body>
 </html>

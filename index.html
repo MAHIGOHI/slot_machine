@@ -3,16 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Core Survival</title>
+<title>TIME ECHO</title>
 <style>
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  background:#06080f;
-  overflow:hidden;
-}
-canvas{display:block;}
+html,body{margin:0;width:100%;height:100%;background:#040610;overflow:hidden}
+canvas{display:block}
 </style>
 </head>
 
@@ -20,89 +14,78 @@ canvas{display:block;}
 <canvas id="c"></canvas>
 
 <script>
-const c=document.getElementById("c");
-const x=c.getContext("2d");
-let w,h;
-resize();
-window.onresize=resize;
+const c=document.getElementById("c"),x=c.getContext("2d");
+let w,h;resize();window.onresize=resize;
 
-let player={x:0,y:0,r:12};
+let player={x:0,y:0,r:10};
+let echo=[];         // recorded path
 let enemies=[];
-let alive=false;
-let speed=1.2;
+let recording=false, replay=false, t=0, alive=true;
 
 function resize(){
-  w=c.width=innerWidth;
-  h=c.height=innerHeight;
-  player.x=w/2;
-  player.y=h/2;
+  w=c.width=innerWidth; h=c.height=innerHeight;
+  player.x=w/2; player.y=h/2;
 }
 
-function start(){
-  enemies=[];
-  speed=1.2;
-  alive=true;
-}
-
-function spawn(){
-  const e={
-    x:Math.random()<0.5?0:w,
+function spawnEnemy(){
+  enemies.push({
+    x:Math.random()*w,
     y:Math.random()*h,
-    r:8,
-  };
-  enemies.push(e);
+    r:8
+  });
 }
 
 c.addEventListener("touchstart",e=>{
-  start();
+  if(!alive) return;
+  recording=true; replay=false; echo=[]; t=0;
 });
 
 c.addEventListener("touchmove",e=>{
-  const t=e.touches[0];
-  player.x=t.clientX;
-  player.y=t.clientY;
+  if(!recording||!alive) return;
+  const p=e.touches[0];
+  player.x=p.clientX; player.y=p.clientY;
+  echo.push({x:player.x,y:player.y});
 });
 
 c.addEventListener("touchend",()=>{
-  alive=false;
+  if(!alive) return;
+  recording=false; replay=true; t=0;
+  spawnEnemy();
 });
 
 function loop(){
-  x.fillStyle="rgba(6,8,15,0.35)";
+  x.fillStyle="rgba(4,6,16,0.35)";
   x.fillRect(0,0,w,h);
 
-  if(alive && Math.random()<0.04) spawn();
+  // replay ghost
+  if(replay && echo.length){
+    let p=echo[Math.min(t,echo.length-1)];
+    x.strokeStyle="rgba(99,102,241,.35)";
+    x.beginPath(); x.arc(p.x,p.y,12,0,Math.PI*2); x.stroke();
+    t++;
+  }
 
-  // enemies
-  for(let i=enemies.length-1;i>=0;i--){
-    let e=enemies[i];
-    let dx=player.x-e.x;
-    let dy=player.y-e.y;
-    let d=Math.hypot(dx,dy);
-    e.x+=dx/d*speed;
-    e.y+=dy/d*speed;
-
-    if(d<player.r+e.r){
-      alive=false;
+  // enemies chase the echo
+  for(let e of enemies){
+    if(echo.length){
+      let target=echo[Math.min(t,echo.length-1)]||player;
+      let dx=target.x-e.x, dy=target.y-e.y;
+      let d=Math.hypot(dx,dy)||1;
+      e.x+=dx/d*1.4; e.y+=dy/d*1.4;
     }
-
     x.fillStyle="#ff3355";
-    x.beginPath();
-    x.arc(e.x,e.y,e.r,0,Math.PI*2);
-    x.fill();
+    x.beginPath(); x.arc(e.x,e.y,e.r,0,Math.PI*2); x.fill();
+
+    let d2=Math.hypot(player.x-e.x,player.y-e.y);
+    if(d2<player.r+e.r){ alive=false; }
   }
 
   // player
-  x.fillStyle=alive?"#4f8cff":"#888";
-  x.beginPath();
-  x.arc(player.x,player.y,player.r,0,Math.PI*2);
-  x.fill();
-
-  if(alive) speed+=0.0006;
+  x.fillStyle=alive?"#4f8cff":"#666";
+  x.beginPath(); x.arc(player.x,player.y,player.r,0,Math.PI*2); x.fill();
 
   requestAnimationFrame(loop);
 }
-
 loop();
 </script>
 </body>

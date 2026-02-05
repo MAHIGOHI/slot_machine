@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>TIME ECHO</title>
+<title>MIND RIPPLE</title>
+
 <style>
-html,body{margin:0;width:100%;height:100%;background:#040610;overflow:hidden}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:#f7f8ff;
+  overflow:hidden;
+  touch-action:none;
+}
 canvas{display:block}
 </style>
 </head>
@@ -14,75 +22,57 @@ canvas{display:block}
 <canvas id="c"></canvas>
 
 <script>
-const c=document.getElementById("c"),x=c.getContext("2d");
-let w,h;resize();window.onresize=resize;
+const c=document.getElementById("c");
+const x=c.getContext("2d");
+resize();window.onresize=resize;
 
-let player={x:0,y:0,r:10};
-let echo=[];         // recorded path
-let enemies=[];
-let recording=false, replay=false, t=0, alive=true;
+let ripples=[];
+let chaos=0;
 
 function resize(){
-  w=c.width=innerWidth; h=c.height=innerHeight;
-  player.x=w/2; player.y=h/2;
-}
-
-function spawnEnemy(){
-  enemies.push({
-    x:Math.random()*w,
-    y:Math.random()*h,
-    r:8
-  });
+  c.width=innerWidth;
+  c.height=innerHeight;
 }
 
 c.addEventListener("touchstart",e=>{
-  if(!alive) return;
-  recording=true; replay=false; echo=[]; t=0;
+  const t=e.touches[0];
+  createRipple(t.clientX,t.clientY);
 });
 
-c.addEventListener("touchmove",e=>{
-  if(!recording||!alive) return;
-  const p=e.touches[0];
-  player.x=p.clientX; player.y=p.clientY;
-  echo.push({x:player.x,y:player.y});
-});
+function createRipple(xp,yp){
+  ripples.push({
+    x:xp,y:yp,
+    r:0,
+    speed:1+Math.random()*2,
+    life:0,
+    hue:200+Math.random()*120
+  });
+  chaos++;
+  if(chaos>25) resetWorld();
+}
 
-c.addEventListener("touchend",()=>{
-  if(!alive) return;
-  recording=false; replay=true; t=0;
-  spawnEnemy();
-});
+function resetWorld(){
+  ripples=[];
+  chaos=0;
+}
 
 function loop(){
-  x.fillStyle="rgba(4,6,16,0.35)";
-  x.fillRect(0,0,w,h);
+  x.fillStyle="rgba(247,248,255,0.25)";
+  x.fillRect(0,0,c.width,c.height);
 
-  // replay ghost
-  if(replay && echo.length){
-    let p=echo[Math.min(t,echo.length-1)];
-    x.strokeStyle="rgba(99,102,241,.35)";
-    x.beginPath(); x.arc(p.x,p.y,12,0,Math.PI*2); x.stroke();
-    t++;
+  for(let i=ripples.length-1;i>=0;i--){
+    const r=ripples[i];
+    r.r+=r.speed;
+    r.life++;
+
+    x.strokeStyle=`hsla(${r.hue},80%,65%,${1-r.life/180})`;
+    x.lineWidth=2;
+    x.beginPath();
+    x.arc(r.x,r.y,r.r,0,Math.PI*2);
+    x.stroke();
+
+    if(r.life>180) ripples.splice(i,1);
   }
-
-  // enemies chase the echo
-  for(let e of enemies){
-    if(echo.length){
-      let target=echo[Math.min(t,echo.length-1)]||player;
-      let dx=target.x-e.x, dy=target.y-e.y;
-      let d=Math.hypot(dx,dy)||1;
-      e.x+=dx/d*1.4; e.y+=dy/d*1.4;
-    }
-    x.fillStyle="#ff3355";
-    x.beginPath(); x.arc(e.x,e.y,e.r,0,Math.PI*2); x.fill();
-
-    let d2=Math.hypot(player.x-e.x,player.y-e.y);
-    if(d2<player.r+e.r){ alive=false; }
-  }
-
-  // player
-  x.fillStyle=alive?"#4f8cff":"#666";
-  x.beginPath(); x.arc(player.x,player.y,player.r,0,Math.PI*2); x.fill();
 
   requestAnimationFrame(loop);
 }

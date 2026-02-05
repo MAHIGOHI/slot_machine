@@ -3,81 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI Signals</title>
+<title>Singularity Grid</title>
 <style>
 html,body{
   margin:0;
   height:100%;
-  background:#f6f7fb;
-  overflow:hidden;
+  background:#0f1220;
+  color:#fff;
   font-family:system-ui;
+  overflow:hidden;
 }
-#score{
+#ui{
   position:fixed;
-  top:12px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:16px;
-  font-weight:600;
+  top:0;
+  left:0;
+  right:0;
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  background:#11152a;
+  z-index:10;
 }
-.signal{
+#grid{
   position:absolute;
-  width:60px;
-  height:60px;
-  border-radius:50%;
+  top:50px;
+  bottom:0;
+  left:0;
+  right:0;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-rows:repeat(8,1fr);
+  gap:4px;
+  padding:6px;
 }
-.real{background:#16a34a;}
-.fake{background:#dc2626;}
+.cell{
+  background:#181c3a;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
+.ai{background:#b91c1c}
+.player{background:#16a34a}
+.trap{background:#2563eb}
 </style>
 </head>
 
 <body>
-<div id="score">Score: 0</div>
+
+<div id="ui">
+  <div>Energy: <span id="energy">10</span></div>
+  <div>AI Level: <span id="level">1</span></div>
+</div>
+
+<div id="grid"></div>
 
 <script>
-let score=0;
-let speed=1200;
+const grid=document.getElementById("grid");
+let energy=10;
+let level=1;
+let cells=[];
+let aiTimer;
 
-function spawn(){
-  const s=document.createElement("div");
-  const real=Math.random()>0.4;
-  s.className="signal "+(real?"real":"fake");
-  s.style.left=Math.random()*(innerWidth-60)+"px";
-  s.style.top=Math.random()*(innerHeight-120)+60+"px";
-  document.body.appendChild(s);
-
-  let clicked=false;
-
-  s.onclick=()=>{
-    clicked=true;
-    if(real){
-      score++;
-      speed=Math.max(500,speed-30);
-      update();
-      s.remove();
-    }else{
-      gameOver();
-    }
-  };
-
-  setTimeout(()=>{
-    if(!clicked){
-      if(real) gameOver();
-      s.remove();
-    }
-  },speed);
+function init(){
+  grid.innerHTML="";
+  cells=[];
+  for(let i=0;i<48;i++){
+    const c=document.createElement("div");
+    c.className="cell";
+    c.state="empty";
+    c.onclick=()=>tap(c);
+    grid.appendChild(c);
+    cells.push(c);
+  }
+  spawnAI(3);
+  loop();
 }
 
-function update(){
-  document.getElementById("score").innerText="Score: "+score;
+function tap(c){
+  if(c.state==="ai" && energy>0){
+    c.state="empty";
+    c.className="cell";
+    energy--;
+  }else if(c.state==="empty" && energy>=2){
+    c.state="trap";
+    c.className="cell trap";
+    energy-=2;
+  }
+  updateUI();
+}
+
+function spawnAI(n){
+  let empty=cells.filter(c=>c.state==="empty");
+  for(let i=0;i<n && empty.length;i++){
+    let c=empty.splice(Math.floor(Math.random()*empty.length),1)[0];
+    c.state="ai";
+    c.className="cell ai";
+  }
+}
+
+function aiStep(){
+  let aiCells=cells.filter(c=>c.state==="ai");
+  aiCells.forEach(c=>{
+    let neighbors=getNeighbors(c);
+    let target=neighbors[Math.floor(Math.random()*neighbors.length)];
+    if(!target) return;
+
+    if(target.state==="empty"){
+      target.state="ai";
+      target.className="cell ai";
+    }else if(target.state==="trap"){
+      target.state="empty";
+      target.className="cell";
+    }
+  });
+
+  if(aiCells.length>20){
+    gameOver();
+  }
+
+  level++;
+  spawnAI(Math.min(3+Math.floor(level/3),6));
+  updateUI();
+}
+
+function getNeighbors(c){
+  let i=cells.indexOf(c);
+  let r=Math.floor(i/6);
+  let col=i%6;
+  let n=[];
+  if(r>0) n.push(cells[i-6]);
+  if(r<7) n.push(cells[i+6]);
+  if(col>0) n.push(cells[i-1]);
+  if(col<5) n.push(cells[i+1]);
+  return n;
+}
+
+function loop(){
+  aiTimer=setInterval(()=>{
+    aiStep();
+    energy=Math.min(energy+1,12);
+  },1200);
+}
+
+function updateUI(){
+  document.getElementById("energy").innerText=energy;
+  document.getElementById("level").innerText=level;
 }
 
 function gameOver(){
-  alert("Game Over\nScore: "+score);
-  location.reload();
+  clearInterval(aiTimer);
+  setTimeout(()=>{
+    alert("SYSTEM OVERRUN\nLevel Reached: "+level);
+    location.reload();
+  },100);
 }
 
-setInterval(spawn,900);
+init();
 </script>
+
 </body>
 </html>

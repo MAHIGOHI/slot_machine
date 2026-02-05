@@ -3,74 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>System</title>
+<title>Field</title>
 <style>
 html,body{
   margin:0;
-  width:100%;
   height:100%;
-  background:#f4f6ff;
-  overflow:hidden;
+  background:#ffffff;
+  font-family:system-ui;
 }
-canvas{display:block}
+#box{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  font-size:22px;
+  color:#111;
+  text-align:center;
+  padding:20px;
+}
 </style>
 </head>
 
 <body>
-<canvas id="c"></canvas>
+<div id="box">Tap anywhere</div>
 
 <script>
-const c=document.getElementById("c");
-const x=c.getContext("2d");
-resize();window.onresize=resize;
+const thoughts=[
+  "You paused.",
+  "You reacted.",
+  "You waited.",
+  "You rushed.",
+  "You avoided.",
+  "You chose comfort.",
+  "You chose speed.",
+  "You chose silence."
+];
 
-let dots=[];
-
-function resize(){
-  c.width=innerWidth;
-  c.height=innerHeight;
-}
-
-for(let i=0;i<120;i++){
-  dots.push({
-    x:Math.random()*c.width,
-    y:Math.random()*c.height,
-    vx:(Math.random()-.5)*0.6,
-    vy:(Math.random()-.5)*0.6,
-    r:2+Math.random()*2
-  });
-}
-
-function loop(){
-  x.fillStyle="rgba(244,246,255,0.3)";
-  x.fillRect(0,0,c.width,c.height);
-
-  for(let i=0;i<dots.length;i++){
-    let a=dots[i];
-    for(let j=i+1;j<dots.length;j++){
-      let b=dots[j];
-      let d=Math.hypot(a.x-b.x,a.y-b.y);
-      if(d<120){
-        x.strokeStyle=`rgba(80,90,255,${1-d/120})`;
-        x.beginPath();
-        x.moveTo(a.x,a.y);
-        x.lineTo(b.x,b.y);
-        x.stroke();
-      }
-    }
-    a.x+=a.vx;
-    a.y+=a.vy;
-    if(a.x<0||a.x>c.width) a.vx*=-1;
-    if(a.y<0||a.y>c.height) a.vy*=-1;
-
-    x.fillStyle="#222";
-    x.beginPath();
-    x.arc(a.x,a.y,a.r,0,Math.PI*2);
-    x.fill();
-  }
-  requestAnimationFrame(loop);
-}
-loop();
+document.body.onclick=()=>{
+  document.getElementById("box").textContent=
+    thoughts[Math.floor(Math.random()*thoughts.length)];
+};
 </script>
 </body>
 </html>

@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Smart Calculator</title>
+<title>mahi002 super calculator</title>
 
 <style>
 :root{
-  --bg:#f5f8ff;
-  --panel:#ffffff;
+  --bg:#f4f7ff;
+  --card:#ffffff;
   --primary:#2563eb;
-  --secondary:#93c5fd;
+  --accent:#1e40af;
   --text:#0f172a;
   --muted:#64748b;
-  --radius:18px;
 }
 
 *{
@@ -23,187 +22,158 @@
 
 body{
   margin:0;
-  background:linear-gradient(180deg,#eaf0ff,#f8fbff);
-  min-height:100vh;
+  background:var(--bg);
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:16px;
-  color:var(--text);
+  min-height:100vh;
 }
 
-.app{
+.calculator{
   width:100%;
   max-width:420px;
-  background:var(--panel);
+  background:var(--card);
   border-radius:24px;
-  box-shadow:0 30px 80px rgba(37,99,235,0.25);
-  overflow:hidden;
+  box-shadow:0 25px 60px rgba(37,99,235,.25);
+  padding:20px;
 }
 
-/* Display */
+.header{
+  text-align:center;
+  font-weight:700;
+  font-size:18px;
+  color:var(--accent);
+  margin-bottom:12px;
+}
+
 .display{
-  padding:24px;
-  background:linear-gradient(135deg,#2563eb,#3b82f6);
-  color:#fff;
+  background:#eef2ff;
+  border-radius:16px;
+  padding:14px;
+  text-align:right;
+  margin-bottom:12px;
 }
 
-.expression{
-  font-size:14px;
-  opacity:.8;
-  min-height:20px;
+.history{
+  font-size:12px;
+  color:var(--muted);
+  min-height:14px;
 }
 
 .result{
-  font-size:42px;
+  font-size:32px;
   font-weight:700;
-  margin-top:8px;
-  word-break:break-all;
+  color:var(--text);
+  overflow-x:auto;
 }
 
-/* AI insight */
-.insight{
-  background:#eef4ff;
-  padding:14px 18px;
-  font-size:13px;
-  color:#1e3a8a;
-}
-
-/* Buttons */
-.keys{
-  padding:18px;
+.grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:14px;
+  gap:12px;
 }
 
-.key{
-  height:64px;
-  border-radius:18px;
+button{
+  height:56px;
   border:none;
-  font-size:20px;
+  border-radius:14px;
+  font-size:18px;
   font-weight:600;
   background:#f1f5ff;
   color:var(--text);
-  box-shadow:inset 0 -3px 0 rgba(0,0,0,0.08);
+  cursor:pointer;
 }
 
-.key:active{
-  transform:scale(0.96);
+button.operator{
+  background:#e0e7ff;
+  color:var(--accent);
 }
 
-.op{
-  background:#e0ebff;
-  color:#1d4ed8;
-}
-
-.equal{
-  grid-column:span 2;
+button.equal{
   background:var(--primary);
   color:#fff;
+  grid-column:span 2;
 }
 
-.clear{
+button.clear{
   background:#fee2e2;
   color:#b91c1c;
 }
 
-.footer{
-  text-align:center;
-  font-size:11px;
-  color:var(--muted);
-  padding-bottom:10px;
+button:active{
+  transform:scale(.96);
 }
 </style>
 </head>
 
 <body>
+<div class="calculator">
 
-<div class="app">
+  <div class="header">mahi002 super calculator</div>
+
   <div class="display">
-    <div id="exp" class="expression"></div>
-    <div id="res" class="result">0</div>
+    <div class="history" id="history"></div>
+    <div class="result" id="result">0</div>
   </div>
 
-  <div id="insight" class="insight">
-    AI ready. Enter numbers to see smart operations.
+  <div class="grid">
+    <button class="clear" onclick="clearAll()">C</button>
+    <button onclick="backspace()">⌫</button>
+    <button onclick="add('(')">(</button>
+    <button onclick="add(')')">)</button>
+
+    <button onclick="add('7')">7</button>
+    <button onclick="add('8')">8</button>
+    <button onclick="add('9')">9</button>
+    <button class="operator" onclick="add('/')">÷</button>
+
+    <button onclick="add('4')">4</button>
+    <button onclick="add('5')">5</button>
+    <button onclick="add('6')">6</button>
+    <button class="operator" onclick="add('*')">×</button>
+
+    <button onclick="add('1')">1</button>
+    <button onclick="add('2')">2</button>
+    <button onclick="add('3')">3</button>
+    <button class="operator" onclick="add('-')">−</button>
+
+    <button onclick="add('0')">0</button>
+    <button onclick="add('.')">.</button>
+    <button class="operator" onclick="add('+')">+</button>
+    <button class="equal" onclick="calculate()">=</button>
   </div>
 
-  <div class="keys">
-    <button class="key clear" onclick="clearAll()">C</button>
-    <button class="key op" onclick="add('/')">÷</button>
-    <button class="key op" onclick="add('*')">×</button>
-    <button class="key op" onclick="add('-')">−</button>
-
-    <button class="key" onclick="add('7')">7</button>
-    <button class="key" onclick="add('8')">8</button>
-    <button class="key" onclick="add('9')">9</button>
-    <button class="key op" onclick="add('+')">+</button>
-
-    <button class="key" onclick="add('4')">4</button>
-    <button class="key" onclick="add('5')">5</button>
-    <button class="key" onclick="add('6')">6</button>
-
-    <button class="key" onclick="add('1')">1</button>
-    <button class="key" onclick="add('2')">2</button>
-    <button class="key" onclick="add('3')">3</button>
-
-    <button class="key" onclick="add('0')">0</button>
-    <button class="key" onclick="add('.')">.</button>
-    <button class="key equal" onclick="calculate()">=</button>
-  </div>
-
-  <div class="footer">AI Store • Smart Offline Calculator</div>
 </div>
 
 <script>
-let expr = "";
+let expression = "";
 
 function add(val){
-  expr += val;
-  document.getElementById("exp").textContent = expr;
-  smartHint(expr);
+  expression += val;
+  document.getElementById("result").textContent = expression;
 }
 
 function clearAll(){
-  expr = "";
-  document.getElementById("exp").textContent = "";
-  document.getElementById("res").textContent = "0";
-  document.getElementById("insight").textContent =
-    "AI ready. Enter numbers to see smart operations.";
+  expression = "";
+  document.getElementById("result").textContent = "0";
+  document.getElementById("history").textContent = "";
+}
+
+function backspace(){
+  expression = expression.slice(0,-1);
+  document.getElementById("result").textContent = expression || "0";
 }
 
 function calculate(){
   try{
-    let r = Function("return " + expr)();
-    document.getElementById("res").textContent = r;
-    smartBreakdown(expr);
+    const res = eval(expression);
+    document.getElementById("history").textContent = expression + " =";
+    document.getElementById("result").textContent = res;
+    expression = res.toString();
   }catch{
-    document.getElementById("res").textContent = "Error";
+    document.getElementById("result").textContent = "Error";
+    expression="";
   }
-}
-
-function smartHint(e){
-  if(!e) return;
-  document.getElementById("insight").textContent =
-    "AI detected expression pattern. Tap = to compute intelligently.";
-}
-
-function smartBreakdown(e){
-  let m = e.match(/(\d+\.?\d*)([+\-*\/])(\d+\.?\d*)/);
-  if(!m) return;
-
-  let a = parseFloat(m[1]);
-  let b = parseFloat(m[3]);
-
-  let text =
-    `AI Insight:
-${a} + ${b} = ${a+b}
-${a} − ${b} = ${a-b}
-${a} × ${b} = ${a*b}
-${a} ÷ ${b} = ${b!==0 ? (a/b) : "∞"}`;
-
-  document.getElementById("insight").textContent = text;
 }
 </script>
 

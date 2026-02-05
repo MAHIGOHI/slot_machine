@@ -3,200 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thinking Engine</title>
+<title>AI World Core</title>
 
 <style>
-:root{
-  --bg:#ffffff;
-  --card:#f6f7fb;
-  --text:#0f172a;
-  --muted:#64748b;
-  --accent:#6366f1;
-  --glow:rgba(99,102,241,.35);
-}
-
-*{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
-
-body{
+html,body{
   margin:0;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:var(--bg);
-  color:var(--text);
-  padding:20px;
-}
-
-.card{
+  padding:0;
   width:100%;
-  max-width:520px;
-  background:var(--card);
-  border-radius:20px;
-  padding:28px;
-  box-shadow:0 25px 60px rgba(0,0,0,.08);
+  height:100%;
+  background:#05070d;
+  overflow:hidden;
+  touch-action:manipulation;
 }
 
-h1{
-  margin:0;
-  text-align:center;
-  font-size:22px;
-  font-weight:700;
+canvas{
+  display:block;
 }
 
-.sub{
-  text-align:center;
-  font-size:13px;
-  color:var(--muted);
-  margin:6px 0 20px;
-}
-
-.screen{
-  background:#fff;
-  border-radius:14px;
-  padding:18px;
-  min-height:160px;
-  border:1px solid #e5e7eb;
-  white-space:pre-wrap;
-  font-size:14.5px;
-  line-height:1.6;
-}
-
-.cursor{
-  display:inline-block;
-  width:8px;
-  height:16px;
-  background:var(--accent);
-  animation:blink 1s infinite;
-  margin-left:2px;
-}
-
-@keyframes blink{
-  0%,50%,100%{opacity:1}
-  25%,75%{opacity:0}
-}
-
-button{
+#hint{
+  position:absolute;
+  bottom:14px;
   width:100%;
-  margin-top:18px;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  font-size:15px;
-  font-weight:600;
-  background:var(--accent);
-  color:#fff;
-  cursor:pointer;
-  box-shadow:0 12px 28px var(--glow);
-}
-
-button:active{transform:scale(.97)}
-
-.footer{
-  margin-top:14px;
   text-align:center;
   font-size:12px;
-  color:var(--muted);
+  color:rgba(255,255,255,.35);
+  letter-spacing:.4px;
 }
 </style>
 </head>
 
 <body>
-<div class="card">
-  <h1>🧠 Thinking Engine</h1>
-  <div class="sub">A live cognitive simulation</div>
-
-  <div id="screen" class="screen">
-    Tap Generate to activate thinking<span class="cursor"></span>
-  </div>
-
-  <button onclick="runEngine()">Generate</button>
-
-  <div class="footer">• AI Store •</div>
-</div>
+<canvas id="ai"></canvas>
+<div id="hint">tap to evolve</div>
 
 <script>
-const styles=[
-"First-principles reasoning",
-"Reverse thinking",
-"Systems analysis",
-"Critical deconstruction",
-"Pattern synthesis"
-];
+const canvas = document.getElementById("ai");
+const ctx = canvas.getContext("2d");
 
-const lenses=[
-"like a strategist",
-"like a psychologist",
-"like an engineer",
-"like a philosopher",
-"like a product architect"
-];
+let w,h,nodes=[],links=[];
+resize();
 
-const constraints=[
-"without assumptions",
-"by challenging norms",
-"focusing only on risk",
-"ignoring popular opinion",
-"optimizing for clarity"
-];
+window.addEventListener("resize",resize);
+canvas.addEventListener("click",evolve);
 
-const outputs=[
-"decision blueprint",
-"thinking framework",
-"mental model",
-"execution map",
-"logic ladder"
-];
-
-function pick(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
+function resize(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
 }
 
-function buildThought(){
-  return `
-THINKING MODE ACTIVE
+function random(min,max){return Math.random()*(max-min)+min}
 
-Reason using ${pick(styles)}
-View the problem ${pick(lenses)}
-Apply constraint: ${pick(constraints)}
+function createWorld(){
+  nodes=[];
+  links=[];
+  const count = Math.floor(random(25,60));
 
-OUTPUT REQUIRED:
-Generate a ${pick(outputs)} that:
-• avoids surface answers
-• exposes blind spots
-• forces clear decisions
-
-RULE:
-No generic advice.
-`;
+  for(let i=0;i<count;i++){
+    nodes.push({
+      x:random(0,w),
+      y:random(0,h),
+      vx:random(-0.4,0.4),
+      vy:random(-0.4,0.4),
+      r:random(1.5,3.2),
+      p:Math.random()
+    });
+  }
 }
 
-function typeText(el,text){
-  el.textContent="";
-  let i=0;
-  const speed=12+Math.random()*18;
-  const timer=setInterval(()=>{
-    el.textContent+=text[i];
-    i++;
-    if(i>=text.length) clearInterval(timer);
-  },speed);
+function evolve(){
+  createWorld();
 }
 
-function runEngine(){
-  const screen=document.getElementById("screen");
-  screen.textContent="Thinking";
-  let dots=0;
+function draw(){
+  ctx.clearRect(0,0,w,h);
 
-  const loader=setInterval(()=>{
-    dots=(dots+1)%4;
-    screen.textContent="Thinking"+ ".".repeat(dots);
-  },300);
+  // links
+  for(let i=0;i<nodes.length;i++){
+    for(let j=i+1;j<nodes.length;j++){
+      const a=nodes[i],b=nodes[j];
+      const d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<120){
+        ctx.strokeStyle=`rgba(99,102,241,${(1-d/120)*0.25})`;
+        ctx.lineWidth=1;
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.stroke();
+      }
+    }
+  }
 
-  setTimeout(()=>{
-    clearInterval(loader);
-    typeText(screen,buildThought());
-  },700+Math.random()*800);
+  // nodes
+  for(const n of nodes){
+    ctx.fillStyle=`rgba(255,255,255,${0.6+n.p*0.4})`;
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.fill();
+
+    n.x+=n.vx;
+    n.y+=n.vy;
+
+    if(n.x<0||n.x>w) n.vx*=-1;
+    if(n.y<0||n.y>h) n.vy*=-1;
+  }
+
+  requestAnimationFrame(draw);
 }
+
+// init
+createWorld();
+draw();
 </script>
 </body>
 </html>

@@ -3,179 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mahi002 super calculator</title>
+<title>Job Near Me</title>
 
 <style>
-:root{
-  --bg:#f4f7ff;
-  --card:#ffffff;
-  --primary:#2563eb;
-  --accent:#1e40af;
-  --text:#0f172a;
-  --muted:#64748b;
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8;
 }
 
-*{
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+/* Header */
+.header {
+  background: #0f172a;
+  color: #fff;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
 }
 
-body{
-  margin:0;
-  background:var(--bg);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
+/* Search Box */
+.search-box {
+  padding: 15px;
+  background: #ffffff;
 }
 
-.calculator{
-  width:100%;
-  max-width:420px;
-  background:var(--card);
-  border-radius:24px;
-  box-shadow:0 25px 60px rgba(37,99,235,.25);
-  padding:20px;
+.search-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
 }
 
-.header{
-  text-align:center;
-  font-weight:700;
-  font-size:18px;
-  color:var(--accent);
-  margin-bottom:12px;
+/* Job Card */
+.job-card {
+  background: #ffffff;
+  margin: 12px;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.display{
-  background:#eef2ff;
-  border-radius:16px;
-  padding:14px;
-  text-align:right;
-  margin-bottom:12px;
+.job-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
-.history{
-  font-size:12px;
-  color:var(--muted);
-  min-height:14px;
+.company {
+  font-size: 14px;
+  color: #555;
 }
 
-.result{
-  font-size:32px;
-  font-weight:700;
-  color:var(--text);
-  overflow-x:auto;
+.location {
+  font-size: 13px;
+  color: #777;
+  margin: 6px 0;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
+.salary {
+  font-size: 14px;
+  color: #0f766e;
+  font-weight: bold;
 }
 
-button{
-  height:56px;
-  border:none;
-  border-radius:14px;
-  font-size:18px;
-  font-weight:600;
-  background:#f1f5ff;
-  color:var(--text);
-  cursor:pointer;
+/* Apply Button */
+.apply-btn {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 8px 14px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
 }
 
-button.operator{
-  background:#e0e7ff;
-  color:var(--accent);
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #ddd;
 }
 
-button.equal{
-  background:var(--primary);
-  color:#fff;
-  grid-column:span 2;
+.bottom-nav div {
+  padding: 10px 0;
+  font-size: 12px;
+  color: #555;
+  text-align: center;
 }
 
-button.clear{
-  background:#fee2e2;
-  color:#b91c1c;
-}
-
-button:active{
-  transform:scale(.96);
+.bottom-nav div.active {
+  color: #2563eb;
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
-<div class="calculator">
 
-  <div class="header">mahi002 super calculator</div>
+<div class="header">Job Near Me</div>
 
-  <div class="display">
-    <div class="history" id="history"></div>
-    <div class="result" id="result">0</div>
-  </div>
-
-  <div class="grid">
-    <button class="clear" onclick="clearAll()">C</button>
-    <button onclick="backspace()">⌫</button>
-    <button onclick="add('(')">(</button>
-    <button onclick="add(')')">)</button>
-
-    <button onclick="add('7')">7</button>
-    <button onclick="add('8')">8</button>
-    <button onclick="add('9')">9</button>
-    <button class="operator" onclick="add('/')">÷</button>
-
-    <button onclick="add('4')">4</button>
-    <button onclick="add('5')">5</button>
-    <button onclick="add('6')">6</button>
-    <button class="operator" onclick="add('*')">×</button>
-
-    <button onclick="add('1')">1</button>
-    <button onclick="add('2')">2</button>
-    <button onclick="add('3')">3</button>
-    <button class="operator" onclick="add('-')">−</button>
-
-    <button onclick="add('0')">0</button>
-    <button onclick="add('.')">.</button>
-    <button class="operator" onclick="add('+')">+</button>
-    <button class="equal" onclick="calculate()">=</button>
-  </div>
-
+<div class="search-box">
+  <input type="text" placeholder="Search job title (eg. Helper, Driver)">
+  <input type="text" placeholder="Location (Auto-detect)">
 </div>
 
-<script>
-let expression = "";
+<div class="job-card">
+  <div class="job-title">Delivery Executive</div>
+  <div class="company">Zomato</div>
+  <div class="location">📍 2 km away</div>
+  <div class="salary">₹15,000 – ₹25,000</div>
+  <a href="#" class="apply-btn">Apply Now</a>
+</div>
 
-function add(val){
-  expression += val;
-  document.getElementById("result").textContent = expression;
-}
+<div class="job-card">
+  <div class="job-title">Store Helper</div>
+  <div class="company">Reliance Mart</div>
+  <div class="location">📍 1.5 km away</div>
+  <div class="salary">₹12,000 – ₹18,000</div>
+  <a href="#" class="apply-btn">Apply Now</a>
+</div>
 
-function clearAll(){
-  expression = "";
-  document.getElementById("result").textContent = "0";
-  document.getElementById("history").textContent = "";
-}
+<div class="job-card">
+  <div class="job-title">Office Boy</div>
+  <div class="company">Local Office</div>
+  <div class="location">📍 Nearby</div>
+  <div class="salary">₹10,000 – ₹14,000</div>
+  <a href="#" class="apply-btn">Apply Now</a>
+</div>
 
-function backspace(){
-  expression = expression.slice(0,-1);
-  document.getElementById("result").textContent = expression || "0";
-}
-
-function calculate(){
-  try{
-    const res = eval(expression);
-    document.getElementById("history").textContent = expression + " =";
-    document.getElementById("result").textContent = res;
-    expression = res.toString();
-  }catch{
-    document.getElementById("result").textContent = "Error";
-    expression="";
-  }
-}
-</script>
+<div class="bottom-nav">
+  <div class="active">Home</div>
+  <div>Search</div>
+  <div>Saved</div>
+  <div>Profile</div>
+</div>
 
 </body>
 </html>

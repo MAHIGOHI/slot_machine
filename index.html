@@ -3,148 +3,181 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Near Me</title>
+<title>mahi002 Ludo</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f4f6f8;
+body{
+  margin:0;
+  background:#f1f5ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:system-ui, sans-serif;
 }
 
-/* Header */
-.header {
-  background: #0f172a;
-  color: #fff;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
+.game{
+  width:360px;
+  background:#fff;
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
 }
 
-/* Search Box */
-.search-box {
-  padding: 15px;
-  background: #ffffff;
+.header{
+  text-align:center;
+  font-weight:700;
+  color:#2563eb;
+  margin-bottom:6px;
 }
 
-.search-box input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
+.board{
+  display:grid;
+  grid-template-columns:repeat(15,1fr);
+  grid-template-rows:repeat(15,1fr);
+  gap:1px;
+  background:#c7d2fe;
 }
 
-/* Job Card */
-.job-card {
-  background: #ffffff;
-  margin: 12px;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+.cell{
+  background:#fff;
+  width:100%;
+  padding-top:100%;
+  position:relative;
 }
 
-.job-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 6px;
+.red{background:#fee2e2}
+.green{background:#dcfce7}
+.blue{background:#dbeafe}
+.yellow{background:#fef9c3}
+.safe{background:#e0e7ff}
+
+.token{
+  position:absolute;
+  width:70%;
+  height:70%;
+  border-radius:50%;
+  top:15%;
+  left:15%;
 }
 
-.company {
-  font-size: 14px;
-  color: #555;
+.t-red{background:#dc2626}
+.t-green{background:#16a34a}
+.t-blue{background:#2563eb}
+.t-yellow{background:#ca8a04}
+
+.controls{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+  align-items:center;
 }
 
-.location {
-  font-size: 13px;
-  color: #777;
-  margin: 6px 0;
+.dice{
+  width:60px;
+  height:60px;
+  background:#2563eb;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:12px;
+  font-size:26px;
+  font-weight:700;
 }
 
-.salary {
-  font-size: 14px;
-  color: #0f766e;
-  font-weight: bold;
-}
-
-/* Apply Button */
-.apply-btn {
-  margin-top: 10px;
-  display: inline-block;
-  padding: 8px 14px;
-  background: #2563eb;
-  color: #fff;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-/* Bottom Nav */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  border-top: 1px solid #ddd;
-}
-
-.bottom-nav div {
-  padding: 10px 0;
-  font-size: 12px;
-  color: #555;
-  text-align: center;
-}
-
-.bottom-nav div.active {
-  color: #2563eb;
-  font-weight: bold;
+button{
+  border:none;
+  background:#1e40af;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:600;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">Job Near Me</div>
+<div class="game">
+  <div class="header">mahi002 Ludo</div>
 
-<div class="search-box">
-  <input type="text" placeholder="Search job title (eg. Helper, Driver)">
-  <input type="text" placeholder="Location (Auto-detect)">
+  <div class="board" id="board"></div>
+
+  <div class="controls">
+    <button onclick="rollDice()">ROLL</button>
+    <div class="dice" id="dice">🎲</div>
+    <button onclick="resetGame()">RESET</button>
+  </div>
 </div>
 
-<div class="job-card">
-  <div class="job-title">Delivery Executive</div>
-  <div class="company">Zomato</div>
-  <div class="location">📍 2 km away</div>
-  <div class="salary">₹15,000 – ₹25,000</div>
-  <a href="#" class="apply-btn">Apply Now</a>
-</div>
+<script>
+const board = document.getElementById("board");
+const diceEl = document.getElementById("dice");
 
-<div class="job-card">
-  <div class="job-title">Store Helper</div>
-  <div class="company">Reliance Mart</div>
-  <div class="location">📍 1.5 km away</div>
-  <div class="salary">₹12,000 – ₹18,000</div>
-  <a href="#" class="apply-btn">Apply Now</a>
-</div>
+let currentPlayer = 0;
+let dice = 0;
 
-<div class="job-card">
-  <div class="job-title">Office Boy</div>
-  <div class="company">Local Office</div>
-  <div class="location">📍 Nearby</div>
-  <div class="salary">₹10,000 – ₹14,000</div>
-  <a href="#" class="apply-btn">Apply Now</a>
-</div>
+const players = [
+  { color:"t-red", pos:-1 },
+  { color:"t-green", pos:-1 },
+  { color:"t-yellow", pos:-1 },
+  { color:"t-blue", pos:-1 }
+];
 
-<div class="bottom-nav">
-  <div class="active">Home</div>
-  <div>Search</div>
-  <div>Saved</div>
-  <div>Profile</div>
-</div>
+// simple linear path (demo playable)
+const path = [];
+for(let i=0;i<225;i++) path.push(i);
+
+function createBoard(){
+  board.innerHTML="";
+  for(let i=0;i<225;i++){
+    const c=document.createElement("div");
+    c.className="cell";
+    c.id="c"+i;
+    board.appendChild(c);
+  }
+}
+createBoard();
+
+function rollDice(){
+  dice = Math.floor(Math.random()*6)+1;
+  diceEl.textContent=dice;
+  moveToken();
+}
+
+function moveToken(){
+  let p = players[currentPlayer];
+
+  if(p.pos===-1){
+    if(dice===6){
+      p.pos=0;
+      placeToken(p);
+    }
+  }else{
+    p.pos += dice;
+    if(p.pos>=path.length-1) p.pos=path.length-1;
+    placeToken(p);
+  }
+
+  currentPlayer = (currentPlayer+1)%players.length;
+}
+
+function placeToken(player){
+  document.querySelectorAll("."+player.color).forEach(t=>t.remove());
+  const cell=document.getElementById("c"+path[player.pos]);
+  const t=document.createElement("div");
+  t.className="token "+player.color;
+  cell.appendChild(t);
+}
+
+function resetGame(){
+  players.forEach(p=>p.pos=-1);
+  document.querySelectorAll(".token").forEach(t=>t.remove());
+  diceEl.textContent="🎲";
+  currentPlayer=0;
+}
+</script>
 
 </body>
 </html>

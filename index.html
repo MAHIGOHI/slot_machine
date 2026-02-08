@@ -2,182 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Invisible Choice Machine</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mahi002 Ludo</title>
-
 <style>
 body{
   margin:0;
-  background:#f1f5ff;
+  background:#0f172a;
+  color:#e5e7eb;
+  font-family:system-ui;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
-  font-family:system-ui, sans-serif;
 }
-
-.game{
-  width:360px;
-  background:#fff;
-  border-radius:18px;
-  padding:12px;
-  box-shadow:0 20px 50px rgba(0,0,0,.25);
-}
-
-.header{
-  text-align:center;
-  font-weight:700;
-  color:#2563eb;
-  margin-bottom:6px;
-}
-
-.board{
-  display:grid;
-  grid-template-columns:repeat(15,1fr);
-  grid-template-rows:repeat(15,1fr);
-  gap:1px;
-  background:#c7d2fe;
-}
-
-.cell{
-  background:#fff;
+.card{
   width:100%;
-  padding-top:100%;
-  position:relative;
+  max-width:420px;
+  background:#020617;
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 0 40px rgba(56,189,248,.35);
+  text-align:center;
 }
-
-.red{background:#fee2e2}
-.green{background:#dcfce7}
-.blue{background:#dbeafe}
-.yellow{background:#fef9c3}
-.safe{background:#e0e7ff}
-
-.token{
-  position:absolute;
-  width:70%;
-  height:70%;
-  border-radius:50%;
-  top:15%;
-  left:15%;
+h1{
+  font-size:18px;
+  margin-bottom:18px;
+  color:#38bdf8;
 }
-
-.t-red{background:#dc2626}
-.t-green{background:#16a34a}
-.t-blue{background:#2563eb}
-.t-yellow{background:#ca8a04}
-
-.controls{
+.options{
   display:flex;
   justify-content:space-between;
-  margin-top:10px;
-  align-items:center;
+  gap:16px;
 }
-
-.dice{
-  width:60px;
-  height:60px;
-  background:#2563eb;
-  color:#fff;
+.choice{
+  flex:1;
+  height:120px;
+  background:#1e293b;
+  border-radius:16px;
   display:flex;
-  justify-content:center;
   align-items:center;
-  border-radius:12px;
-  font-size:26px;
-  font-weight:700;
+  justify-content:center;
+  font-size:16px;
+  cursor:pointer;
+  user-select:none;
 }
-
-button{
-  border:none;
-  background:#1e40af;
-  color:#fff;
-  padding:10px 14px;
-  border-radius:10px;
-  font-weight:600;
+.result{
+  margin-top:20px;
+  background:#020617;
+  border:1px solid #334155;
+  border-radius:14px;
+  padding:16px;
+  min-height:90px;
+  white-space:pre-wrap;
+}
+.small{
+  margin-top:10px;
+  font-size:12px;
+  color:#64748b;
 }
 </style>
 </head>
 
 <body>
+<div class="card">
+  <h1>Choose without thinking</h1>
 
-<div class="game">
-  <div class="header">mahi002 Ludo</div>
+  <div class="options">
+    <div class="choice" onclick="select(0)">Option</div>
+    <div class="choice" onclick="select(1)">Option</div>
+  </div>
 
-  <div class="board" id="board"></div>
+  <div id="result" class="result">
+    You haven't chosen yet.
+  </div>
 
-  <div class="controls">
-    <button onclick="rollDice()">ROLL</button>
-    <div class="dice" id="dice">🎲</div>
-    <button onclick="resetGame()">RESET</button>
+  <div class="small">
+    Tap instinctively. There is no right answer.
   </div>
 </div>
 
 <script>
-const board = document.getElementById("board");
-const diceEl = document.getElementById("dice");
+let start = Date.now();
+let lastMove = null;
 
-let currentPlayer = 0;
-let dice = 0;
+function select(side){
+  const time = Date.now() - start;
 
-const players = [
-  { color:"t-red", pos:-1 },
-  { color:"t-green", pos:-1 },
-  { color:"t-yellow", pos:-1 },
-  { color:"t-blue", pos:-1 }
-];
+  let profile = "";
 
-// simple linear path (demo playable)
-const path = [];
-for(let i=0;i<225;i++) path.push(i);
-
-function createBoard(){
-  board.innerHTML="";
-  for(let i=0;i<225;i++){
-    const c=document.createElement("div");
-    c.className="cell";
-    c.id="c"+i;
-    board.appendChild(c);
-  }
-}
-createBoard();
-
-function rollDice(){
-  dice = Math.floor(Math.random()*6)+1;
-  diceEl.textContent=dice;
-  moveToken();
-}
-
-function moveToken(){
-  let p = players[currentPlayer];
-
-  if(p.pos===-1){
-    if(dice===6){
-      p.pos=0;
-      placeToken(p);
-    }
+  if(time < 900){
+    profile = "You decide fast.\nYou trust instinct more than certainty.";
+  }else if(time < 2000){
+    profile = "You pause before choosing.\nYou balance logic and intuition.";
   }else{
-    p.pos += dice;
-    if(p.pos>=path.length-1) p.pos=path.length-1;
-    placeToken(p);
+    profile = "You hesitate.\nYou fear losing more than you desire winning.";
   }
 
-  currentPlayer = (currentPlayer+1)%players.length;
-}
+  if(side === 0){
+    profile += "\n\nYou lean toward familiarity over exploration.";
+  }else{
+    profile += "\n\nYou lean toward curiosity over safety.";
+  }
 
-function placeToken(player){
-  document.querySelectorAll("."+player.color).forEach(t=>t.remove());
-  const cell=document.getElementById("c"+path[player.pos]);
-  const t=document.createElement("div");
-  t.className="token "+player.color;
-  cell.appendChild(t);
-}
+  document.getElementById("result").innerText =
+    "Result:\n\n" + profile + 
+    "\n\nYou were not asked anything.\nYet you revealed something.";
 
-function resetGame(){
-  players.forEach(p=>p.pos=-1);
-  document.querySelectorAll(".token").forEach(t=>t.remove());
-  diceEl.textContent="🎲";
-  currentPlayer=0;
+  start = Date.now();
 }
 </script>
-
 </body>
 </html>

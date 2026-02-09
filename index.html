@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Invisible Choice Machine</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic Dominion</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <style>
 body{
   margin:0;
@@ -13,102 +14,133 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
+  min-height:100vh;
 }
-.card{
+.game{
   width:100%;
   max-width:420px;
   background:#020617;
-  border-radius:20px;
-  padding:24px;
-  box-shadow:0 0 40px rgba(56,189,248,.35);
-  text-align:center;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 0 40px rgba(56,189,248,.3);
 }
 h1{
-  font-size:18px;
-  margin-bottom:18px;
+  text-align:center;
   color:#38bdf8;
+  margin-bottom:10px;
 }
-.options{
+.score{
   display:flex;
   justify-content:space-between;
-  gap:16px;
+  margin-bottom:12px;
+  font-weight:600;
 }
-.choice{
-  flex:1;
-  height:120px;
+.board{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+button{
+  height:70px;
+  border:none;
+  border-radius:14px;
+  font-size:22px;
+  font-weight:700;
   background:#1e293b;
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
-  cursor:pointer;
-  user-select:none;
+  color:#fff;
 }
-.result{
-  margin-top:20px;
+button:active{transform:scale(.95)}
+.log{
+  margin-top:14px;
   background:#020617;
   border:1px solid #334155;
-  border-radius:14px;
-  padding:16px;
-  min-height:90px;
-  white-space:pre-wrap;
-}
-.small{
-  margin-top:10px;
-  font-size:12px;
-  color:#64748b;
+  border-radius:12px;
+  padding:10px;
+  font-size:13px;
+  min-height:70px;
 }
 </style>
 </head>
 
 <body>
-<div class="card">
-  <h1>Choose without thinking</h1>
+<div class="game">
+  <h1>Logic Dominion</h1>
 
-  <div class="options">
-    <div class="choice" onclick="select(0)">Option</div>
-    <div class="choice" onclick="select(1)">Option</div>
+  <div class="score">
+    <div>You: <span id="ps">0</span></div>
+    <div>AI: <span id="as">0</span></div>
   </div>
 
-  <div id="result" class="result">
-    You haven't chosen yet.
-  </div>
+  <div class="board" id="board"></div>
 
-  <div class="small">
-    Tap instinctively. There is no right answer.
+  <div class="log" id="log">
+    Reach 50 points to win. AI adapts to you.
   </div>
 </div>
 
 <script>
-let start = Date.now();
-let lastMove = null;
+const board=document.getElementById("board");
+const log=document.getElementById("log");
+let playerScore=0;
+let aiScore=0;
+let history=[];
 
-function select(side){
-  const time = Date.now() - start;
+for(let i=1;i<=9;i++){
+  const b=document.createElement("button");
+  b.textContent=i;
+  b.onclick=()=>playerMove(i);
+  board.appendChild(b);
+}
 
-  let profile = "";
+function playerMove(n){
+  playerScore+=n;
+  history.push(n);
+  aiMove();
+  update();
+  check();
+}
 
-  if(time < 900){
-    profile = "You decide fast.\nYou trust instinct more than certainty.";
-  }else if(time < 2000){
-    profile = "You pause before choosing.\nYou balance logic and intuition.";
-  }else{
-    profile = "You hesitate.\nYou fear losing more than you desire winning.";
+function aiMove(){
+  let guess = predict();
+  aiScore+=guess;
+  log.innerText=
+    `You picked ${history[history.length-1]}.
+AI predicted ${guess}.`;
+}
+
+function predict(){
+  if(history.length<3){
+    return Math.ceil(Math.random()*9);
   }
+  // pattern detection: favor average of last 3
+  let avg = history.slice(-3).reduce((a,b)=>a+b,0)/3;
+  let pick = Math.round(avg);
+  pick = Math.max(1,Math.min(9,pick));
+  return pick;
+}
 
-  if(side === 0){
-    profile += "\n\nYou lean toward familiarity over exploration.";
-  }else{
-    profile += "\n\nYou lean toward curiosity over safety.";
+function update(){
+  document.getElementById("ps").innerText=playerScore;
+  document.getElementById("as").innerText=aiScore;
+}
+
+function check(){
+  if(playerScore>=50){
+    alert("YOU WIN. AI outplayed.");
+    reset();
   }
+  if(aiScore>=50){
+    alert("AI WINS. Pattern detected.");
+    reset();
+  }
+}
 
-  document.getElementById("result").innerText =
-    "Result:\n\n" + profile + 
-    "\n\nYou were not asked anything.\nYet you revealed something.";
-
-  start = Date.now();
+function reset(){
+  playerScore=0;
+  aiScore=0;
+  history=[];
+  update();
+  log.innerText="New round. AI recalibrated.";
 }
 </script>
 </body>

@@ -2,167 +2,260 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AI Insight Assistant</title>
+<title>AI Decision Engine</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background:#0f172a;
-    color:#fff;
+body {
+  margin:0;
+  font-family: Inter, system-ui, sans-serif;
+  background:#0b0d12;
+  color:#eaeaf0;
 }
-.chat-container{
-    max-width:420px;
-    margin:30px auto;
-    background:#020617;
-    border-radius:16px;
-    box-shadow:0 0 25px rgba(0,255,255,0.15);
-    overflow:hidden;
+
+header {
+  padding:20px;
+  text-align:center;
+  font-size:20px;
+  font-weight:600;
+  border-bottom:1px solid #1f2430;
 }
-.chat-header{
-    padding:16px;
-    text-align:center;
-    background:linear-gradient(90deg,#06b6d4,#3b82f6);
-    font-weight:bold;
-    letter-spacing:0.5px;
+
+.container {
+  padding:20px;
+  max-width:900px;
+  margin:auto;
 }
-.chat-box{
-    height:380px;
-    padding:15px;
-    overflow-y:auto;
-    background:#020617;
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
 }
-.bot, .user{
-    margin-bottom:14px;
-    line-height:1.5;
+
+.card {
+  background:#131722;
+  border:1px solid #22293a;
+  border-radius:12px;
+  padding:18px;
+  cursor:pointer;
+  transition:.25s;
 }
-.bot{
-    background:#020617;
-    border-left:3px solid #22d3ee;
-    padding:10px 12px;
-    border-radius:10px;
+
+.card:hover {
+  border-color:#3b82f6;
+  transform:translateY(-2px);
 }
-.user{
-    text-align:right;
-    color:#93c5fd;
+
+.card h3 {
+  margin:0 0 8px;
+  font-size:16px;
 }
-.input-area{
-    display:flex;
-    border-top:1px solid #1e293b;
+
+.card p {
+  font-size:13px;
+  color:#aab0c0;
 }
-input{
-    flex:1;
-    padding:14px;
-    border:none;
-    outline:none;
-    background:#020617;
-    color:#fff;
+
+.output {
+  margin-top:30px;
+  padding:20px;
+  background:#10131c;
+  border-radius:14px;
+  border:1px solid #1f2536;
+  display:none;
 }
-button{
-    padding:14px 18px;
-    border:none;
-    background:#06b6d4;
-    color:#000;
-    font-weight:bold;
-    cursor:pointer;
+
+.output h2 {
+  font-size:18px;
+  margin-bottom:12px;
 }
-button:hover{
-    background:#22d3ee;
+
+.stack {
+  margin-bottom:15px;
+  padding:14px;
+  border-left:4px solid #3b82f6;
+  background:#0f1320;
+  border-radius:8px;
 }
-.footer-note{
-    font-size:12px;
-    text-align:center;
-    padding:8px;
-    color:#94a3b8;
+
+.stack strong {
+  display:block;
+  margin-bottom:6px;
+}
+
+button {
+  background:#3b82f6;
+  border:none;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+button.secondary {
+  background:#1f2937;
 }
 </style>
 </head>
 
 <body>
 
-<div class="chat-container">
-    <div class="chat-header">
-        AI Insight Assistant
-    </div>
+<header>
+AI Decision Engine — Human-Safe System
+</header>
 
-    <div class="chat-box" id="chatBox">
-        <div class="bot">
-            Hi. I’m your AI Insight Assistant.  
-            Ask me anything about AI, growth, learning, or digital systems.
-        </div>
-    </div>
+<div class="container">
 
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Ask something..." />
-        <button onclick="sendMessage()">Send</button>
-    </div>
+<h3>Select what you want to build</h3>
 
-    <div class="footer-note">
-        Simulated AI thinking • No API • Privacy-safe
-    </div>
+<div class="grid">
+
+<div class="card" onclick="engineSocial()">
+<h3>📈 Grow on Social Media</h3>
+<p>Audience, reach, content systems</p>
+</div>
+
+<div class="card" onclick="engineBusiness()">
+<h3>💼 Build a Business System</h3>
+<p>Solo founder, low capital, leverage AI</p>
+</div>
+
+<div class="card" onclick="engineLearning()">
+<h3>🧠 Learn AI from Zero</h3>
+<p>No coding, real-world use</p>
+</div>
+
+<div class="card" onclick="engineAgent()">
+<h3>🤖 Build AI Agents</h3>
+<p>Understand agents, not chatbots</p>
+</div>
+
+</div>
+
+<div class="output" id="outputBox"></div>
+
 </div>
 
 <script>
-function sendMessage(){
-    let input=document.getElementById("userInput");
-    let text=input.value.trim();
-    if(text==="") return;
+const box = document.getElementById("outputBox");
 
-    addUser(text);
-    input.value="";
-
-    setTimeout(()=>generateAI(text),600);
+function show(html){
+  box.style.display="block";
+  box.innerHTML = html;
 }
 
-function addUser(msg){
-    let chat=document.getElementById("chatBox");
-    chat.innerHTML+=`<div class="user">${msg}</div>`;
-    chat.scrollTop=chat.scrollHeight;
+/* ===== ENGINE 1: SOCIAL GROWTH ===== */
+function engineSocial(){
+show(`
+<h2>AI System for Social Media Growth</h2>
+
+<div class="stack">
+<strong>Primary AI Stack</strong>
+ChatGPT → Content strategy & hooks<br>
+Claude → Deep audience psychology<br>
+Canva AI → Visual execution
+</div>
+
+<div class="stack">
+<strong>System Logic</strong>
+This system focuses on identity-based growth, not trends.
+Audience grows when message clarity beats frequency.
+</div>
+
+<div class="stack">
+<strong>Ready Prompt</strong>
+“Act as a social media strategist. Design a 30-day identity-driven content system for zero-audience creators.”
+</div>
+
+<button onclick="openAI('https://chat.openai.com')">Open AI Tool</button>
+`);
 }
 
-function addBot(msg){
-    let chat=document.getElementById("chatBox");
-    chat.innerHTML+=`<div class="bot">${msg}</div>`;
-    chat.scrollTop=chat.scrollHeight;
+/* ===== ENGINE 2: BUSINESS ===== */
+function engineBusiness(){
+show(`
+<h2>AI-Driven Business Blueprint</h2>
+
+<div class="stack">
+<strong>Recommended AI Stack</strong>
+ChatGPT → System design<br>
+Perplexity → Market validation<br>
+Notion AI → Process documentation
+</div>
+
+<div class="stack">
+<strong>System Insight</strong>
+Most businesses fail due to lack of systems, not ideas.
+AI replaces manpower, not vision.
+</div>
+
+<div class="stack">
+<strong>Starter Prompt</strong>
+“Build a low-capital, solo-founder business system using AI leverage.”
+</div>
+
+<button onclick="openAI('https://chat.openai.com')">Open AI Tool</button>
+`);
 }
 
-function generateAI(text){
-    let t=text.toLowerCase();
-    let reply="Interesting question. Let me explain this from a systems perspective.";
+/* ===== ENGINE 3: AI LEARNING ===== */
+function engineLearning(){
+show(`
+<h2>AI Learning Path (Non-Coder)</h2>
 
-    if(t.includes("instagram") || t.includes("social")){
-        reply=`Growing on social platforms is less about luck and more about structure.  
-AI-driven creators focus on consistency, audience psychology, and repeatable formats — not trends.  
-If you want, I can help you build a content system instead of chasing virality.`;
-    }
-    else if(t.includes("earn") || t.includes("money") || t.includes("income")){
-        reply=`Most people chase income. Smart builders design systems.  
-AI helps by reducing decision fatigue, speeding execution, and scaling ideas quietly.  
-The real question is not *how to earn*, but *what system can compound for you*.`;
-    }
-    else if(t.includes("ai") || t.includes("chatgpt") || t.includes("tool")){
-        reply=`AI is no longer just a tool — it’s a thinking layer.  
-Those who use AI for execution stay average.  
-Those who use AI for strategy quietly move ahead.`;
-    }
-    else if(t.includes("learn") || t.includes("study") || t.includes("skill")){
-        reply=`Learning today is about direction, not information.  
-AI learners don’t consume more — they filter better.  
-Focus on one skill, one system, one output loop.`;
-    }
-    else if(t.includes("future")){
-        reply=`The future is built silently.  
-Most shifts happen before people notice them.  
-AI adoption is not about hype — it’s about positioning early.`;
-    }
-    else{
-        reply=`That’s a good thought.  
-AI thinking usually starts by breaking problems into systems, patterns, and leverage points.  
-If you want clarity, ask your question more specifically.`;
-    }
+<div class="stack">
+<strong>Learning Stack</strong>
+ChatGPT → Use-cases<br>
+Gemini → Exploration<br>
+YouTube AI channels → Context
+</div>
 
-    addBot(reply);
+<div class="stack">
+<strong>Learning Rule</strong>
+Do not learn tools. Learn outcomes.
+AI mastery comes from problems, not features.
+</div>
+
+<div class="stack">
+<strong>Learning Prompt</strong>
+“Teach me AI through real-world use cases, not theory.”
+</div>
+
+<button onclick="openAI('https://chat.openai.com')">Open AI Tool</button>
+`);
+}
+
+/* ===== ENGINE 4: AI AGENTS ===== */
+function engineAgent(){
+show(`
+<h2>AI Agent Understanding System</h2>
+
+<div class="stack">
+<strong>Agent Stack</strong>
+ChatGPT → Planning agent<br>
+Auto-GPT concepts → Autonomy<br>
+Workflow tools → Execution
+</div>
+
+<div class="stack">
+<strong>Important Reality</strong>
+AI agents are systems that observe, decide and act — not chat.
+Most people misuse them.
+</div>
+
+<div class="stack">
+<strong>Agent Prompt</strong>
+“Explain how to build an AI agent that operates without constant human input.”
+</div>
+
+<button onclick="openAI('https://chat.openai.com')">Open AI Tool</button>
+`);
+}
+
+function openAI(url){
+  window.open(url,"_blank");
 }
 </script>
 

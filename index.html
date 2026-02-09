@@ -3,636 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Decision Engine</title>
+    <title>AI Decision Core | Chat Mode</title>
     <style>
         :root {
+            --bg: #F3F4F6;
+            --chat-bg: #FFFFFF;
             --primary: #2563EB;
-            --primary-dark: #1E40AF;
-            --secondary: #3B82F6;
-            --accent: #60A5FA;
-            --bg: #F8FAFC;
-            --card-bg: #FFFFFF;
-            --text-main: #1E293B;
-            --text-sub: #64748B;
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
-            --radius: 16px;
-            --anim-speed: 0.4s;
+            --primary-light: #EFF6FF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --user-bubble: #2563EB;
+            --ai-bubble: #FFFFFF;
+            --radius: 18px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* Top Bar */
-        header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-            color: white;
-            padding: 20px 24px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        h1 { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px; }
-        .subtitle { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; font-weight: 400; }
-
-        /* Main Container */
-        main {
-            flex: 1;
-            padding: 24px;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Cards & Transitions */
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 32px 24px;
-            box-shadow: var(--shadow);
-            animation: slideUp var(--anim-speed) cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes slideUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--text-main);
-            line-height: 1.2;
-        }
-
-        .section-desc {
-            font-size: 1rem;
-            color: var(--text-sub);
-            margin-bottom: 32px;
-            line-height: 1.6;
-        }
-
-        /* Buttons */
-        .btn-grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        button {
-            background: white;
-            border: 1px solid #E2E8F0;
-            padding: 18px 20px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-main);
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
+            height: 100vh;
+            display: flex; flex-direction: column;
             overflow: hidden;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-
-        button:active { transform: scale(0.98); }
-        
-        button:hover {
-            border-color: var(--primary);
-            background: #EFF6FF;
-            color: var(--primary-dark);
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex; align-items: center; justify-content: space-between;
+            z-index: 10;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-
-        button::after {
-            content: "→";
-            opacity: 0.5;
-            transition: transform 0.2s;
+        .brand {
+            font-weight: 700; font-size: 1rem; color: var(--text-dark);
+            display: flex; align-items: center; gap: 8px;
         }
-
-        button:hover::after {
-            transform: translateX(4px);
-            opacity: 1;
-        }
-
-        /* Result Specifics */
-        .result-box {
-            border-left: 4px solid var(--primary);
-            padding: 0 0 0 20px;
-            margin: 24px 0;
-        }
-
-        .result-label {
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            color: var(--text-sub);
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .highlight-text {
-            color: var(--primary-dark);
-            font-weight: 600;
-        }
-
-        .action-btn {
-            background: var(--primary);
-            color: white;
-            text-align: center;
-            justify-content: center;
-            border: none;
-        }
-        
-        .action-btn:hover {
-            background: var(--primary-dark);
-            color: white;
-        }
-
-        .action-btn::after { display: none; }
-
-        /* Thinking Animation */
-        .thinking-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95);
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .pulse-circle {
-            width: 60px;
-            height: 60px;
+        .brand-dot {
+            width: 8px; height: 8px; background: #10B981;
             border-radius: 50%;
-            background: var(--primary);
-            animation: pulse 1.5s infinite;
-            margin-bottom: 20px;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
         }
-
-        .thinking-text {
-            font-family: monospace;
-            color: var(--text-sub);
-            font-size: 0.9rem;
+        .reset-btn {
+            font-size: 0.8rem; color: var(--text-light);
+            background: none; border: 1px solid #E5E7EB;
+            cursor: pointer; padding: 6px 12px; border-radius: 6px;
+            transition: all 0.2s;
         }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(37, 99, 235, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        .reset-btn:hover { background: #F3F4F6; color: var(--text-dark); }
+        #chat-container {
+            flex: 1; overflow-y: auto;
+            padding: 20px; padding-bottom: 140px;
+            display: flex; flex-direction: column; gap: 16px;
+            scroll-behavior: smooth;
         }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: #EFF6FF;
-            color: var(--primary);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 16px;
+        .message {
+            max-width: 85%; padding: 14px 18px;
+            border-radius: var(--radius);
+            font-size: 0.95rem; line-height: 1.5;
+            position: relative;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .message.ai {
+            background-color: var(--ai-bubble); color: var(--text-dark);
+            align-self: flex-start; border-bottom-left-radius: 4px;
+        }
+        .message.user {
+            background-color: var(--user-bubble); color: white;
+            align-self: flex-end; border-bottom-right-radius: 4px;
+            box-shadow: var(--shadow);
+        }
+        .message.system {
+            background: transparent; color: var(--text-light);
+            font-size: 0.75rem; align-self: center;
+            text-transform: uppercase; letter-spacing: 1px;
+            font-weight: 600; margin: 10px 0; padding: 0;
+            border: none; box-shadow: none;
+        }
+        #controls {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white;
+            padding: 16px 20px 24px 20px;
+            border-top: 1px solid #E5E7EB;
+            z-index: 20;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+        }
+        #options-grid {
+            display: flex; flex-wrap: wrap; gap: 10px;
+            justify-content: center;
+        }
+        button.option-chip {
+            background: white; border: 1px solid #D1D5DB;
+            color: var(--text-dark);
+            padding: 12px 20px; border-radius: 24px;
+            font-size: 0.9rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            flex: 1 1 auto; max-width: 100%; text-align: center;
+        }
+        button.option-chip:active { transform: scale(0.96); }
+        button.option-chip:hover {
+            border-color: var(--primary); color: var(--primary);
+            background: var(--primary-light);
+        }
+        .typing-indicator {
+            display: flex; gap: 4px; padding: 16px 20px;
+            background: var(--ai-bubble); border-radius: var(--radius);
+            align-self: flex-start; border-bottom-left-radius: 4px;
+            margin-bottom: 8px; width: fit-content;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .dot {
+            width: 8px; height: 8px; background: #9CA3AF;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
         .hidden { display: none !important; }
-
+        .result-card {
+            background: #F8FAFC; border: 1px solid #E2E8F0;
+            border-radius: 12px; padding: 16px; margin-top: 10px;
+        }
+        .result-header { 
+            font-size: 0.75rem; font-weight: 700; color: var(--primary); 
+            margin-bottom: 8px; letter-spacing: 0.5px;
+        }
+        .result-row { margin-bottom: 12px; font-size: 0.95rem; }
+        .result-row:last-child { margin-bottom: 0; }
+        .result-label { 
+            font-weight: 600; font-size: 0.7rem; color: var(--text-light); 
+            text-transform: uppercase; margin-bottom: 4px;
+        }
+        .result-value { color: var(--text-dark); }
     </style>
 </head>
 <body>
-
     <header>
-        <h1>AI Decision Engine</h1>
-        <div class="subtitle">Structured thinking for humans.</div>
+        <div class="brand"><div class="brand-dot"></div>AI Decision Core</div>
+        <button class="reset-btn" onclick="Chat.init()">Restart</button>
     </header>
-
-    <main id="app-container">
-        </main>
-
-    <div id="thinking-ui" class="thinking-overlay hidden">
-        <div class="pulse-circle"></div>
-        <div id="thinking-msg" class="thinking-text">Initializing logic core...</div>
+    <div id="chat-container"></div>
+    <div id="controls">
+        <div id="typing-ui" class="typing-indicator hidden">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <div id="options-grid"></div>
     </div>
-
 <script>
-    /**
-     * AI Decision Engine - Logic Core
-     * No APIs. Pure State Machine.
-     */
-
-    // --- Data Structure ( The Brain ) ---
-    const ENGINE = {
-        home: {
-            title: "Select Your Objective",
-            desc: "The system will guide you through a logic tree to determine the optimal execution path for your specific constraints.",
+    const DATA = {
+        start: {
+            text: "Hello. I am the Decision Core. I am not a chatbot; I am a logic engine designed to help you execute complex goals. What is your primary objective today?",
             options: [
-                { text: "Build a Business System", next: "business_start", context: "Analysis: Business Architecture" },
-                { text: "Grow on Social Media", next: "social_start", context: "Analysis: Audience Psychology" },
-                { text: "Learn AI from Zero", next: "learn_start", context: "Analysis: Curriculum Generation" },
-                { text: "Build AI Agents", next: "agent_start", context: "Analysis: Autonomous Systems" }
+                { label: "Grow on Social Media", next: "social" },
+                { label: "Build a Business", next: "business" },
+                { label: "Learn AI", next: "learn" },
+                { label: "Create AI Agents", next: "agents" }
             ]
         },
-        
-        // --- Business Logic Path ---
-        business_start: {
-            title: "Current Asset Audit",
-            desc: "Business models are constraints-based. What is your primary unfair advantage right now?",
+        business: {
+            text: "Building a business is an exercise in constraint management. What is your primary asset right now?",
             options: [
-                { text: "I have Capital (Money)", next: "biz_capital", context: "Asset: Capital Allocation" },
-                { text: "I have Skill (Time)", next: "biz_skill", context: "Asset: Service Economy" },
-                { text: "I have Nothing (Grit)", next: "biz_grit", context: "Asset: High Effort/Low Cost" }
+                { label: "I have Money (Capital)", next: "biz_money" },
+                { label: "I have Time (Skill)", next: "biz_skill" },
+                { label: "I have Nothing (Grit)", next: "biz_grit" }
             ]
         },
-        biz_capital: {
-            title: "Risk Tolerance Profile",
-            desc: "Capital allows leverage, but requires risk management. Choose your operational preference.",
+        biz_money: {
+            text: "Capital allows for leverage. What is your risk tolerance?",
             options: [
-                { text: "Low Risk (Slow Compound)", next: "res_biz_invest", context: "Profile: Conservative" },
-                { text: "High Risk (Fast Scale)", next: "res_biz_ads", context: "Profile: Aggressive" }
+                { label: "Low Risk (Compound)", next: "res_invest" },
+                { label: "High Risk (Scale)", next: "res_ads" }
             ]
         },
         biz_skill: {
-            title: "Scalability Check",
-            desc: "You are trading time for money. How do you intend to break the linear income cap?",
+            text: "You are trading time for value. How will you scale?",
             options: [
-                { text: "Productize (Build once, sell twice)", next: "res_biz_product", context: "Mode: Productization" },
-                { text: "Agency (Hire others)", next: "res_biz_agency", context: "Mode: Delegation" }
+                { label: "Productize (Sell Digital)", next: "res_product" },
+                { label: "Agency (Sell Services)", next: "res_agency" }
             ]
         },
         biz_grit: {
-            title: "Entry Vector",
-            desc: "Without money or skill, you must rely on arbitrage or volume.",
+            text: "The path of grit requires volume. Choose your vector.",
             options: [
-                { text: "Content Arbitrage", next: "res_biz_content", context: "Vector: Attention" },
-                { text: "Service Arbitrage (Middleman)", next: "res_biz_drop", context: "Vector: Sales" }
+                { label: "Content Arbitrage", next: "res_content" },
+                { label: "Sales (High Ticket)", next: "res_sales" }
             ]
         },
-
-        // --- Social Logic Path ---
-        social_start: {
-            title: "Content Archetype",
-            desc: "Growth fails when the medium fights the message. What is your natural communication style?",
+        social: {
+            text: "Growth requires aligning the medium with your natural strengths. How do you communicate best?",
             options: [
-                { text: "Visual / Aesthetic", next: "soc_visual", context: "Type: Visual Cortex" },
-                { text: "Analytical / Text", next: "soc_text", context: "Type: Intellectual" },
-                { text: "Personality / Video", next: "soc_video", context: "Type: Parasocial" }
+                { label: "Writing (Text)", next: "soc_text" },
+                { label: "Speaking (Video)", next: "soc_video" },
+                { label: "Design (Visuals)", next: "soc_visual" }
             ]
         },
         soc_text: {
-            title: "Value Proposition",
-            desc: "Text audiences are high-intent but skeptical. What do you offer?",
+            text: "Text audiences value density and insight. What is your angle?",
             options: [
-                { text: "Curated Insight (News/Lists)", next: "res_soc_curator", context: "Value: Time Saved" },
-                { text: "Deep Expertise (How-to)", next: "res_soc_educator", context: "Value: Skill Gained" }
-            ]
-        },
-        // (Simplified branches for brevity but functionally unique)
-        soc_visual: {
-            title: "Platform Dynamics",
-            desc: "Visuals require high velocity. Can you sustain daily output?",
-            options: [
-                { text: "Yes, I am fast", next: "res_soc_trend", context: "Strat: Volume" },
-                { text: "No, I prefer quality", next: "res_soc_asset", context: "Strat: Prestige" }
+                { label: "Curator (News/Lists)", next: "res_curator" },
+                { label: "Expert (How-to)", next: "res_expert" }
             ]
         },
         soc_video: {
-            title: "Narrative Style",
-            desc: "Video is about retention.",
+            text: "Video is about retention and personality.",
             options: [
-                { text: "Educational / Stoic", next: "res_soc_edu_vid", context: "Tone: Trust" },
-                { text: "Entertainment / High Energy", next: "res_soc_ent_vid", context: "Tone: Dopamine" }
+                { label: "Educational", next: "res_edu_vid" },
+                { label: "Entertainment", next: "res_ent_vid" }
             ]
         },
-
-        // --- AI Learning Path ---
-        learn_start: {
-            title: "Outcome Definition",
-            desc: "Why are you learning AI? The 'Why' dictates the 'How'.",
+        soc_visual: {
+            text: "Visual platforms require high aesthetic consistency.",
             options: [
-                { text: "Career Pivot (Get Hired)", next: "learn_career", context: "Goal: Employment" },
-                { text: "Productivity (Do faster)", next: "res_learn_tools", context: "Goal: Efficiency" }
+                { label: "Trend Surfing", next: "res_trend" },
+                { label: "Portfolio/Art", next: "res_art" }
             ]
         },
-        learn_career: {
-            title: "Technical Depth",
-            desc: "Do you want to build the engine or drive the car?",
+        learn: {
+            text: "Why are you learning AI? The motive dictates the curriculum.",
             options: [
-                { text: "I like Code/Math", next: "res_learn_engineer", context: "Role: Engineer" },
-                { text: "I like Product/Logic", next: "res_learn_pm", context: "Role: Architect" }
+                { label: "To get a Job", next: "learn_job" },
+                { label: "To build Tools", next: "res_tools" }
             ]
         },
-
-        // --- AI Agents Path ---
-        agent_start: {
-            title: "System Complexity",
-            desc: "Agents are loops. How autonomous should this system be?",
+        learn_job: {
+            text: "Which layer of the stack interests you?",
             options: [
-                { text: "Human-in-the-loop (Assistant)", next: "res_agent_assist", context: "Loop: Open" },
-                { text: "Fully Autonomous (Auto-GPT)", next: "agent_auto", context: "Loop: Closed" }
+                { label: "The Math (Engineer)", next: "res_eng" },
+                { label: "The Application (PM)", next: "res_pm" }
             ]
         },
-        agent_auto: {
-            title: "Safety Guardrails",
-            desc: "Autonomous agents hallucinate. How do you verify output?",
+        agents: {
+            text: "Autonomous agents are complex loops. What is the goal?",
             options: [
-                { text: "Code Execution Validator", next: "res_agent_code", context: "Guard: Deterministic" },
-                { text: "LLM Self-Correction", next: "res_agent_llm", context: "Guard: Probabilistic" }
+                { label: "Full Autonomy", next: "ag_auto" },
+                { label: "Human Assist", next: "res_copilot" }
             ]
         },
-
-        // --- RESULTS (Leaf Nodes) ---
-        // Business Results
-        res_biz_invest: {
-            type: "result",
-            title: "The 'Compounder' Strategy",
-            strategy: "Focus on Micro-SaaS Acquisition or Dividend Investing. You have capital but dislike risk.",
-            trap: "Avoid: Venture Capital & Crypto. You will panic sell.",
-            action: "Start researching 'SME Acquisition' marketplaces."
+        ag_auto: {
+            text: "Autonomous loops are dangerous without guardrails.",
+            options: [
+                { label: "Code Sandbox", next: "res_sandbox" },
+                { label: "LLM Reflection", next: "res_reflect" }
+            ]
         },
-        res_biz_ads: {
-            type: "result",
-            title: "The 'Paid Traffic' Engine",
-            strategy: "Use capital to buy data. Run Paid Ads to a High-Ticket Offer.",
-            trap: "Avoid: Organic growth. It's too slow for your capital burn rate.",
-            action: "Launch a Meta Ads test campaign ($50/day)."
-        },
-        res_biz_product: {
-            type: "result",
-            title: "The Digital Product Funnel",
-            strategy: "Package your skill into a Course, Template, or Tool.",
-            trap: "Avoid: 1-on-1 Consulting. It kills your ability to scale.",
-            action: "Draft your product outline today."
-        },
-        res_biz_agency: {
-            type: "result",
-            title: "The 'Drop-Service' Agency",
-            strategy: "Sell the outcome, hire contractors to fulfill the work.",
-            trap: "Avoid: Doing the work yourself. You are the sales engine now.",
-            action: "Write a job post for a contractor."
-        },
-        res_biz_content: {
-            type: "result",
-            title: "The 'Documentarian' Path",
-            strategy: "Document your journey of learning a skill publicly.",
-            trap: "Avoid: Acting like an expert. Be the 'Relatable Beginner'.",
-            action: "Post your 'Day 1' update."
-        },
-        res_biz_drop: {
-            type: "result",
-            title: "High-Ticket Closing",
-            strategy: "Find an existing business and sell their product for commission.",
-            trap: "Avoid: Building a website. You only need a phone and a script.",
-            action: "Contact 10 business owners."
-        },
-
-        // Social Results
-        res_soc_curator: {
-            type: "result",
-            title: "The Intelligence Filter",
-            strategy: "Newsletter Model. Aggregate noise, deliver signal.",
-            trap: "Avoid: Long opinion pieces initially. People want synthesis, not your diary.",
-            action: "Draft your first 'Top 5' list."
-        },
-        res_soc_educator: {
-            type: "result",
-            title: "The Authority Build",
-            strategy: "Twitter/LinkedIn Threads. Solve specific, painful problems.",
-            trap: "Avoid: Broad motivation. Be surgically specific.",
-            action: "Write 3 headlines solving one problem."
-        },
-        res_soc_trend: {
-            type: "result",
-            title: "The Trend Surfer",
-            strategy: "Instagram Reels / TikTok. Use trending audio + your niche overlay.",
-            trap: "Avoid: Perfectionism. Quantity is your quality filter.",
-            action: "Record 5 drafts in one hour."
-        },
-        res_soc_asset: {
-            type: "result",
-            title: "The Aesthetic Portfolio",
-            strategy: "Pinterest / IG Static. High fidelity visuals that inspire.",
-            trap: "Avoid: Chasing trends. Build a timeless visual language.",
-            action: "Create a moodboard."
-        },
-        res_soc_edu_vid: {
-            type: "result",
-            title: "The Video Essayist",
-            strategy: "YouTube Long Form. Deep dives into complex topics.",
-            trap: "Avoid: Clickbait that doesn't deliver. Retention is your metric.",
-            action: "Script your intro hook."
-        },
-        res_soc_ent_vid: {
-            type: "result",
-            title: "The Personality Brand",
-            strategy: "Shorts/Reels. High energy, cuts every 2 seconds.",
-            trap: "Avoid: Monotone delivery. Energy transfer is the product.",
-            action: "Practice speaking 20% louder."
-        },
-
-        // Learn Results
-        res_learn_tools: {
-            type: "result",
-            title: "The AI-Augmented Human",
-            strategy: "Master Prompt Engineering & Workflow Automation (Zapier + OpenAI).",
-            trap: "Avoid: Learning Python. You don't need it. Focus on integration.",
-            action: "Automate one daily email task."
-        },
-        res_learn_engineer: {
-            type: "result",
-            title: "The ML Engineer Path",
-            strategy: "Math (Linear Algebra) -> Python -> PyTorch -> Transformers.",
-            trap: "Avoid: Jumping to LLMs without understanding Neural Net basics.",
-            action: "Start a 'Fast.ai' course."
-        },
-        res_learn_pm: {
-            type: "result",
-            title: "The AI Product Manager",
-            strategy: "Learn API capabilities, Fine-tuning economics, and UX for AI.",
-            trap: "Avoid: Getting lost in code. Focus on feasibility and user value.",
-            action: "Map out an AI feature spec."
-        },
-
-        // Agent Results
-        res_agent_assist: {
-            type: "result",
-            title: "Copilot Architecture",
-            strategy: "Build a system where the AI proposes, and the Human approves.",
-            trap: "Avoid: Giving the AI write-access to your database without review.",
-            action: "Design the 'Approval UI' flow."
-        },
-        res_agent_code: {
-            type: "result",
-            title: "Sandboxed Python Environment",
-            strategy: "Agent writes code -> System runs code in Docker -> Returns output.",
-            trap: "Avoid: Running generated code on your local machine root.",
-            action: "Set up a Docker sandbox."
-        },
-        res_agent_llm: {
-            type: "result",
-            title: "The Reflection Pattern",
-            strategy: "Agent Output -> Agent Critic (Review) -> Final Output.",
-            trap: "Avoid: Single-shot prompts for complex tasks. Use chain-of-thought.",
-            action: "Write a 'Critic' system prompt."
-        }
+        res_invest: { result: true, title: "SME Acquisition", body: "Don't start from scratch. Buy a boring business with cash flow." },
+        res_ads: { result: true, title: "Paid Traffic Arbitrage", body: "Use money to buy data. Run Meta Ads to high-ticket offers." },
+        res_product: { result: true, title: "Digital Productization", body: "Turn your knowledge into a template or course. Sell it repeatedly." },
+        res_agency: { result: true, title: "Drop-Servicing", body: "Sell the outcome, hire contractors to do the work." },
+        res_content: { result: true, title: "Document the Journey", body: "You have no status. Be the 'Relatable Beginner'. Post daily." },
+        res_sales: { result: true, title: "Appointment Setting", body: "Use your grit to cold DM/call. Close deals for others." },
+        res_curator: { result: true, title: "The Newsletter Filter", body: "Aggregate noise. Sell the signal. Save people time." },
+        res_expert: { result: true, title: "The Authority Build", body: "Solve specific painful problems on LinkedIn/X." },
+        res_edu_vid: { result: true, title: "Video Essayist", body: "Deep dive content on YouTube. Focus on script writing." },
+        res_ent_vid: { result: true, title: "Short Form Personality", body: "High energy, fast cuts. Optimize for dopamine." },
+        res_trend: { result: true, title: "Viral Surfing", body: "Use trending audio. Volume is the only metric that matters." },
+        res_art: { result: true, title: "Aesthetic Branding", body: "Pinterest/IG. Build a mood board that sells a lifestyle." },
+        res_tools: { result: true, title: "The Automator", body: "Learn Zapier/Make + API calls. Connect tools together." },
+        res_eng: { result: true, title: "ML Engineer", body: "Learn Linear Algebra, Python, PyTorch. Build models." },
+        res_pm: { result: true, title: "AI Product Manager", body: "Learn what is possible. Focus on UX and Feasibility." },
+        res_copilot: { result: true, title: "Human-in-the-Loop", body: "AI suggests, Human approves. Safest path." },
+        res_sandbox: { result: true, title: "Docker Execution", body: "Isolate AI code generation in a secure container." },
+        res_reflect: { result: true, title: "Chain of Thought", body: "Force the Agent to critique its own plan before executing." }
     };
 
-    // --- Logic Core ---
-
-    const App = {
-        container: document.getElementById('app-container'),
-        loader: document.getElementById('thinking-ui'),
-        loaderMsg: document.getElementById('thinking-msg'),
-        history: [],
-
+    const Chat = {
+        container: document.getElementById('chat-container'),
+        grid: document.getElementById('options-grid'),
+        typing: document.getElementById('typing-ui'),
+        
         init: function() {
-            this.renderNode('home');
+            this.container.innerHTML = ''; 
+            this.addMessage("system", "Secure Connection Established");
+            setTimeout(() => { this.step('start'); }, 500);
         },
-
-        // Fake AI Thinking
-        think: function(callback, contextMsg) {
-            this.loader.classList.remove('hidden');
-            
-            const messages = [
-                "Analyzing inputs...",
-                "Calculating probabilities...",
-                "Structuring logic tree...",
-                "Filtering noise...",
-                "Optimizing constraints...",
-                contextMsg || "Processing..."
-            ];
-
-            let msgIndex = 0;
-            this.loaderMsg.innerText = messages[0];
-            
-            // Randomize thinking time between 800ms and 1500ms
-            const delay = Math.floor(Math.random() * 700) + 800;
-
-            // Flash text logic
-            const interval = setInterval(() => {
-                msgIndex = (msgIndex + 1) % messages.length;
-         this.loaderMsg.innerText = messages[msgIndex];
-            }, 400);
-
+        step: function(id) {
+            const node = DATA[id];
+            this.simulateThinking(() => {
+                if (node.result) {
+                    this.addResult(node);
+                    this.showResetOption();
+                } else {
+                    this.addMessage('ai', node.text);
+                    this.renderOptions(node.options);
+                }
+            });
+        },
+        simulateThinking: function(callback) {
+            this.grid.innerHTML = ''; 
+            this.typing.classList.remove('hidden');
+            this.scrollToBottom();
+            const delay = Math.floor(Math.random() * 600) + 600;
             setTimeout(() => {
-                clearInterval(interval);
-                this.loader.classList.add('hidden');
+                this.typing.classList.add('hidden');
                 callback();
             }, delay);
         },
-
-        // Render a Question or Result
-        renderNode: function(nodeId) {
-            const data = ENGINE[nodeId];
-            if (!data) return console.error("Node not found:", nodeId);
-
-            if (data.type === "result") {
-                this.renderResult(data);
-            } else {
-                this.renderQuestion(data);
-            }
+        addMessage: function(type, text) {
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.innerHTML = text;
+            this.container.appendChild(div);
+            this.scrollToBottom();
         },
-
-        renderQuestion: function(data) {
-            let optionsHtml = '';
-            
-            data.options.forEach(opt => {
-                optionsHtml += `
-                    <button onclick="App.handleChoice('${opt.next}', '${opt.context}')">
-                        ${opt.text}
-                    </button>
-                `;
+        addResult: function(data) {
+            const html = `
+                <div class="result-header">RECOMMENDATION GENERATED</div>
+                <div class="result-card">
+                    <div class="result-row">
+                        <div class="result-label">STRATEGY</div>
+                        <div class="result-value" style="font-weight:600; font-size:1.1rem">${data.title}</div>
+                    </div>
+                    <div class="result-row">
+                        <div class="result-label">EXECUTION</div>
+                        <div class="result-value">${data.body}</div>
+                    </div>
+                </div>`;
+            this.addMessage('ai', html);
+        },
+        renderOptions: function(options) {
+            this.grid.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-chip';
+                btn.innerText = opt.label;
+                btn.onclick = () => this.handleUserChoice(opt);
+                this.grid.appendChild(btn);
             });
-
-            const html = `
-                <div class="card">
-                    <div class="badge">DECISION NODE</div>
-                    <div class="section-title">${data.title}</div>
-                    <div class="section-desc">${data.desc}</div>
-                    <div class="btn-grid">
-                        ${optionsHtml}
-                    </div>
-                </div>
-                ${this.history.length > 0 ? `<div style="text-align:center; margin-top:20px; font-size:0.8rem; color:#94a3b8; cursor:pointer" onclick="App.reset()">Start Over</div>` : ''}
-            `;
-
-            this.container.innerHTML = html;
+            this.scrollToBottom();
         },
-},
-
-        renderResult: function(data) {
-            const html = `
-                <div class="card" style="border-top: 4px solid var(--primary)">
-                    <div class="badge" style="background:var(--primary); color:white">OPTIMAL PATH FOUND</div>
-                    <div class="section-title">${data.title}</div>
-                    
-                    <div class="result-box">
-                        <div class="result-label">The Strategy</div>
-                        <div class="section-desc" style="margin-bottom:0">${data.strategy}</div>
-                    </div>
-
-                    <div class="result-box" style="border-color: #EF4444">
-                        <div class="result-label" style="color: #EF4444">The Trap (Safety Protocol)</div>
-                        <div class="section-desc" style="margin-bottom:0">${data.trap}</div>
-                    </div>
-
-                    <div class="result-box" style="border-color: #10B981">
-                        <div class="result-label" style="color: #10B981">Immediate Action</div>
-                        <div class="section-desc" style="margin-bottom:0; font-weight:600">${data.action}</div>
-                    </div>
-
-                    <div class="btn-grid" style="margin-top:32px">
-                        <button class="action-btn" onclick="App.reset()">
-                            INITIALIZE NEW SESSION
-                        </button>
-                    </div>
-                </div>
-            `;
-            this.container.innerHTML = html;
+        handleUserChoice: function(opt) {
+            this.grid.innerHTML = ''; 
+            this.addMessage('user', opt.label);
+            this.step(opt.next);
         },
-
-        handleChoice: function(nextNodeId, context) {
-            this.history.push(context);
-            
-            // Trigger thinking with context
-            const thinkMsg = `Integrating: ${context.split(':')[1] || 'User Selection'}`;
-            
-            this.think(() => {
-                this.renderNode(nextNodeId);
-            }, thinkMsg);
+        showResetOption: function() {
+            this.grid.innerHTML = '';
+            const btn = document.createElement('button');
+            btn.className = 'option-chip';
+            btn.innerText = "Start New Session";
+            btn.style.borderColor = "#2563EB"; btn.style.color = "#2563EB";
+            btn.onclick = () => this.init();
+            this.grid.appendChild(btn);
+            this.scrollToBottom();
         },
-
-        reset: function() {
-            this.history = [];
-            this.think(() => {
-                this.renderNode('home');
-            }, "Clearing session memory...");
+        scrollToBottom: function() {
+            setTimeout(() => { this.container.scrollTop = this.container.scrollHeight; }, 50);
         }
     };
-
-    // Start Engine
-    window.onload = function() {
-        App.init();
-    };
-
+    window.onload = function() { Chat.init(); };
 </script>
 </body>
 </html>

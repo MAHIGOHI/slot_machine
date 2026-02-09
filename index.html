@@ -1,147 +1,554 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Logic Dominion</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<style>
-body{
-  margin:0;
-  background:#0f172a;
-  color:#e5e7eb;
-  font-family:system-ui;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
+## <html lang="en" xmlns="[http://www.w3.org/1999/xhtml](http://www.w3.org/1999/xhtml)" xmlns:b="[http://www.google.com/2005/gml/b](https://www.google.com/search?q=http://www.google.com/2005/gml/b)" xmlns:data="[http://www.google.com/2005/gml/data](https://www.google.com/search?q=http://www.google.com/2005/gml/data)" xmlns:expr="[http://www.google.com/2005/gml/expr](https://www.google.com/search?q=http://www.google.com/2005/gml/expr)"> <head> <meta charset="UTF-8"/> <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/> <title>AI Use-Case Generator</title> <style> /* -------------------------------------------------- CORE STYLES (Reset & Variables)
+
+*/
+:root {
+--primary: #4f46e5;
+--primary-hover: #4338ca;
+--bg-color: #f8fafc;
+--card-bg: #ffffff;
+--text-main: #1e293b;
+--text-sub: #64748b;
+--border: #e2e8f0;
+--radius: 12px;
+--shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+--transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
-.game{
-  width:100%;
-  max-width:420px;
-  background:#020617;
-  padding:20px;
-  border-radius:18px;
-  box-shadow:0 0 40px rgba(56,189,248,.3);
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+-webkit-tap-highlight-color: transparent;
 }
-h1{
-  text-align:center;
-  color:#38bdf8;
-  margin-bottom:10px;
+
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+background-color: var(--bg-color);
+color: var(--text-main);
+line-height: 1.5;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 20px;
 }
-.score{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-  font-weight:600;
+
+/* Blogger Override - Hide Default Elements just in case */
+.navbar, .blog-pager, .post-footer, .feed-links, .sidebar, .header, .footer { display: none !important; }
+
+## /* -------------------------------------------------- LAYOUT & CONTAINER
+
+*/
+#app-container {
+width: 100%;
+max-width: 600px;
+margin: 0 auto;
+position: relative;
 }
-.board{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
+
+header {
+text-align: center;
+margin-bottom: 30px;
+padding-top: 20px;
 }
-button{
-  height:70px;
-  border:none;
-  border-radius:14px;
-  font-size:22px;
-  font-weight:700;
-  background:#1e293b;
-  color:#fff;
+
+h1 {
+font-size: 1.5rem;
+font-weight: 700;
+margin-bottom: 8px;
+color: var(--text-main);
 }
-button:active{transform:scale(.95)}
-.log{
-  margin-top:14px;
-  background:#020617;
-  border:1px solid #334155;
-  border-radius:12px;
-  padding:10px;
-  font-size:13px;
-  min-height:70px;
+
+.subtitle {
+font-size: 0.95rem;
+color: var(--text-sub);
+}
+
+## /* -------------------------------------------------- COMPONENTS
+
+*/
+/* Cards */
+.card-grid {
+display: grid;
+grid-template-columns: 1fr;
+gap: 12px;
+}
+
+@media (min-width: 480px) {
+.card-grid {
+grid-template-columns: 1fr 1fr;
+}
+}
+
+.selection-card {
+background: var(--card-bg);
+border: 1px solid var(--border);
+border-radius: var(--radius);
+padding: 20px;
+cursor: pointer;
+transition: var(--transition);
+display: flex;
+align-items: center;
+gap: 15px;
+box-shadow: var(--shadow);
+}
+
+.selection-card:active {
+transform: scale(0.98);
+}
+
+.selection-card:hover {
+border-color: var(--primary);
+transform: translateY(-2px);
+}
+
+.card-icon {
+font-size: 1.5rem;
+background: #eef2ff;
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+}
+
+.card-text {
+font-weight: 600;
+font-size: 1rem;
+}
+
+/* Result Cards */
+.result-card {
+background: var(--card-bg);
+border-radius: var(--radius);
+padding: 24px;
+margin-bottom: 16px;
+box-shadow: var(--shadow);
+border-left: 4px solid var(--primary);
+}
+
+.result-title {
+font-weight: 700;
+font-size: 1.1rem;
+margin-bottom: 6px;
+}
+
+.result-desc {
+color: var(--text-sub);
+font-size: 0.9rem;
+margin-bottom: 16px;
+}
+
+.tool-btn {
+display: inline-block;
+background: var(--primary);
+color: white;
+text-decoration: none;
+padding: 8px 16px;
+border-radius: 6px;
+font-size: 0.85rem;
+font-weight: 500;
+transition: background 0.2s;
+}
+
+.tool-btn:hover {
+background: var(--primary-hover);
+}
+
+/* Navigation */
+.nav-bar {
+display: flex;
+justify-content: flex-start;
+margin-bottom: 20px;
+}
+
+.back-btn {
+background: transparent;
+border: none;
+color: var(--text-sub);
+font-size: 0.9rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 6px;
+padding: 8px 0;
+}
+
+.back-btn:hover {
+color: var(--primary);
+}
+
+## /* -------------------------------------------------- UTILITIES & ANIMATION
+
+*/
+.hidden {
+display: none !important;
+}
+
+.fade-in {
+animation: fadeIn 0.4s ease-out forwards;
+opacity: 0;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.progress-dots {
+display: flex;
+justify-content: center;
+gap: 8px;
+margin-bottom: 25px;
+}
+
+.dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background-color: var(--border);
+transition: background-color 0.3s;
+}
+
+.dot.active {
+background-color: var(--primary);
 }
 </style>
+<b:skin><![CDATA[]]></b:skin>
+
 </head>
-
 <body>
-<div class="game">
-  <h1>Logic Dominion</h1>
 
-  <div class="score">
-    <div>You: <span id="ps">0</span></div>
-    <div>AI: <span id="as">0</span></div>
-  </div>
+<div id="app-container">
+<header>
+<h1>AI Use-Case Generator</h1>
+<p class="subtitle" id="header-subtitle">Discover how AI helps you.</p>
+</header>
 
-  <div class="board" id="board"></div>
+```
+<div class="progress-dots" id="progress-container">
+    <div class="dot active" id="dot-1"></div>
+    <div class="dot" id="dot-2"></div>
+    <div class="dot" id="dot-3"></div>
+</div>
 
-  <div class="log" id="log">
-    Reach 50 points to win. AI adapts to you.
-  </div>
+<div class="nav-bar hidden" id="nav-bar">
+    <button class="back-btn" onclick="goBack()">
+        <span>←</span> Back
+    </button>
+</div>
+
+<div id="step-1" class="fade-in">
+    <h3 style="margin-bottom:15px; font-weight:600;">I am a...</h3>
+    <div class="card-grid" id="role-grid">
+        </div>
+</div>
+
+<div id="step-2" class="hidden">
+    <h3 style="margin-bottom:15px; font-weight:600;">I want to...</h3>
+    <div class="card-grid" id="goal-grid">
+        </div>
+</div>
+
+<div id="step-3" class="hidden">
+    <h3 style="margin-bottom:15px; font-weight:600;">Here is the plan:</h3>
+    <div id="results-container">
+        </div>
+    <div style="text-align:center; margin-top:30px;">
+        <button onclick="resetApp()" style="background:transparent; border:1px solid var(--border); padding:10px 20px; border-radius:var(--radius); cursor:pointer; color:var(--text-sub);">Start Over</button>
+    </div>
+</div>
+
+```
+
 </div>
 
 <script>
-const board=document.getElementById("board");
-const log=document.getElementById("log");
-let playerScore=0;
-let aiScore=0;
-let history=[];
+// --------------------------------------------------
+// DATA STORE
+// --------------------------------------------------
 
-for(let i=1;i<=9;i++){
-  const b=document.createElement("button");
-  b.textContent=i;
-  b.onclick=()=>playerMove(i);
-  board.appendChild(b);
+const roles = [
+{ id: 'student', title: 'Student', icon: '🎓' },
+{ id: 'freelancer', title: 'Freelancer', icon: '💻' },
+{ id: 'business', title: 'Business Owner', icon: '🚀' },
+{ id: 'creator', title: 'Content Creator', icon: '🎨' },
+{ id: 'jobseeker', title: 'Job Seeker', icon: '💼' }
+];
+
+const goals = {
+student: [
+{ id: 'study', title: 'Study Faster' },
+{ id: 'writing', title: 'Improve Writing' },
+{ id: 'research', title: 'Deep Research' }
+],
+freelancer: [
+{ id: 'clients', title: 'Find Clients' },
+{ id: 'admin', title: 'Automate Admin' },
+{ id: 'code', title: 'Debug Code' }
+],
+business: [
+{ id: 'marketing', title: 'Marketing Copy' },
+{ id: 'support', title: 'Customer Support' },
+{ id: 'analysis', title: 'Data Analysis' }
+],
+creator: [
+{ id: 'ideas', title: 'Generate Ideas' },
+{ id: 'editing', title: 'Edit Video/Audio' },
+{ id: 'social', title: 'Social Captions' }
+],
+jobseeker: [
+{ id: 'resume', title: 'Fix Resume' },
+{ id: 'coverletter', title: 'Write Cover Letters' },
+{ id: 'interview', title: 'Interview Prep' }
+]
+};
+
+const results = {
+// Student
+student_study: [
+{ title: 'Summarize Textbooks', desc: 'Paste long chapters to get bullet-point summaries and key concepts instantly.', tool: 'ChatGPT / Claude' },
+{ title: 'Create Flashcards', desc: 'Turn your notes into Q&A pairs for active recall study sessions.', tool: 'Quizlet AI' }
+],
+student_writing: [
+{ title: 'Grammar & Style Check', desc: 'Go beyond spellcheck to improve tone, clarity, and sentence structure.', tool: 'Grammarly GO' },
+{ title: 'Essay Outlining', desc: 'Generate logical structures for your essays before you start writing.', tool: 'Jasper' }
+],
+student_research: [
+{ title: 'Find Academic Papers', desc: 'Search for real citations and peer-reviewed papers without hallucinations.', tool: 'Consensus.app' },
+{ title: 'Explain Complex Topics', desc: 'Ask AI to explain quantum physics "like I am 5".', tool: 'Perplexity AI' }
+],
+
+```
+// Freelancer
+freelancer_clients: [
+    { title: &#39;Cold Email Generator&#39;, desc: &#39;Create personalized outreach emails based on a prospect\&#39;s website.&#39;, tool: &#39;ChatGPT&#39; },
+    { title: &#39;Proposal Writer&#39;, desc: &#39;Draft professional scopes of work and project proposals in minutes.&#39;, tool: &#39;PandaDoc AI&#39; }
+],
+freelancer_admin: [
+    { title: &#39;Draft Contracts&#39;, desc: &#39;Generate standard freelance contracts and NDAs.&#39;, tool: &#39;LegalZoom&#39; },
+    { title: &#39;Meeting Summaries&#39;, desc: &#39;Record client calls and get auto-generated action items.&#39;, tool: &#39;Otter.ai&#39; }
+],
+freelancer_code: [
+    { title: &#39;Code Refactoring&#39;, desc: &#39;Clean up spaghetti code and add comments automatically.&#39;, tool: &#39;GitHub Copilot&#39; },
+    { title: &#39;Bug Squashing&#39;, desc: &#39;Paste error logs to identify the root cause immediately.&#39;, tool: &#39;ChatGPT&#39; }
+],
+
+// Business
+business_marketing: [
+    { title: &#39;Ad Copy Variations&#39;, desc: &#39;Generate 50 headlines for Facebook ads to test A/B performance.&#39;, tool: &#39;Copy.ai&#39; },
+    { title: &#39;SEO Blog Posts&#39;, desc: &#39;Create SEO-optimized outlines and content drafts.&#39;, tool: &#39;Surfer SEO&#39; }
+],
+business_support: [
+    { title: &#39;24/7 Chatbot&#39;, desc: &#39;Train a bot on your FAQs to answer customers instantly.&#39;, tool: &#39;Intercom Fin&#39; },
+    { title: &#39;Email Triage&#39;, desc: &#39;Draft polite responses to angry customer emails automatically.&#39;, tool: &#39;Zendesk AI&#39; }
+],
+business_analysis: [
+    { title: &#39;Spreadsheet Formulas&#39;, desc: &#39;Describe what you need in English, get the Excel formula.&#39;, tool: &#39;Excel AI&#39; },
+    { title: &#39;Trend Spotting&#39;, desc: &#39;Upload sales data CSVs to find hidden patterns.&#39;, tool: &#39;ChatGPT Data Analyst&#39; }
+],
+
+// Creator
+creator_ideas: [
+    { title: &#39;Viral Hooks&#39;, desc: &#39;Generate 10 hook variations for your next YouTube video.&#39;, tool: &#39;ChatGPT&#39; },
+    { title: &#39;Script Writing&#39;, desc: &#39;Turn a rough bulleted list into a full video script.&#39;, tool: &#39;Writesonic&#39; }
+],
+creator_editing: [
+    { title: &#39;Remove Silence&#39;, desc: &#39;Automatically cut dead air and pauses from your footage.&#39;, tool: &#39;Timebolt&#39; },
+    { title: &#39;AI Voiceovers&#39;, desc: &#39;Clone your voice or use realistic stock voices.&#39;, tool: &#39;ElevenLabs&#39; }
+],
+creator_social: [
+    { title: &#39;Repurpose Content&#39;, desc: &#39;Turn one YouTube video into 10 Tweets and 3 LinkedIn posts.&#39;, tool: &#39;OpusClip&#39; },
+    { title: &#39;Image Generation&#39;, desc: &#39;Create custom thumbnails or background art.&#39;, tool: &#39;Midjourney&#39; }
+],
+
+// Job Seeker
+jobseeker_resume: [
+    { title: &#39;ATS Optimization&#39;, desc: &#39;Rewrite bullet points to match keywords in the job description.&#39;, tool: &#39;Jobscan&#39; },
+    { title: &#39;Summary Writer&#39;, desc: &#39;Create a powerful professional summary based on your history.&#39;, tool: &#39;TealHQ&#39; }
+],
+jobseeker_coverletter: [
+    { title: &#39;Tailored Letters&#39;, desc: &#39;Paste your CV and the Job Description to write a unique letter.&#39;, tool: &#39;ChatGPT&#39; },
+    { title: &#39;Tone Adjustment&#39;, desc: &#39;Make your writing sound more confident and professional.&#39;, tool: &#39;Grammarly&#39; }
+],
+jobseeker_interview: [
+    { title: &#39;Mock Interviews&#39;, desc: &#39;Practice answering tough questions with real-time feedback.&#39;, tool: &#39;Google Interview Warmup&#39; },
+    { title: &#39;Salary Negotiation&#39;, desc: &#39;Roleplay negotiation scripts to get paid what you are worth.&#39;, tool: &#39;ChatGPT&#39; }
+]
+
+```
+
+};
+
+// --------------------------------------------------
+// APP LOGIC
+// --------------------------------------------------
+
+let state = {
+step: 1,
+role: null,
+goal: null
+};
+
+// DOM Elements
+const step1 = document.getElementById('step-1');
+const step2 = document.getElementById('step-2');
+const step3 = document.getElementById('step-3');
+const navBar = document.getElementById('nav-bar');
+const dots = [
+document.getElementById('dot-1'),
+document.getElementById('dot-2'),
+document.getElementById('dot-3')
+];
+
+// Initialize
+function init() {
+renderRoles();
 }
 
-function playerMove(n){
-  playerScore+=n;
-  history.push(n);
-  aiMove();
-  update();
-  check();
+// Render Roles (Step 1)
+function renderRoles() {
+const grid = document.getElementById('role-grid');
+grid.innerHTML = '';
+roles.forEach(role => {
+const card = document.createElement('div');
+card.className = 'selection-card';
+card.onclick = () => selectRole(role.id);
+card.innerHTML = `&lt;div class=&quot;card-icon&quot;&gt;${role.icon}&lt;/div&gt; &lt;div class=&quot;card-text&quot;&gt;${role.title}&lt;/div&gt;`;
+grid.appendChild(card);
+});
 }
 
-function aiMove(){
-  let guess = predict();
-  aiScore+=guess;
-  log.innerText=
-    `You picked ${history[history.length-1]}.
-AI predicted ${guess}.`;
+// Handle Role Selection
+function selectRole(roleId) {
+state.role = roleId;
+state.step = 2;
+updateUI();
+renderGoals(roleId);
 }
 
-function predict(){
-  if(history.length<3){
-    return Math.ceil(Math.random()*9);
-  }
-  // pattern detection: favor average of last 3
-  let avg = history.slice(-3).reduce((a,b)=>a+b,0)/3;
-  let pick = Math.round(avg);
-  pick = Math.max(1,Math.min(9,pick));
-  return pick;
+// Render Goals (Step 2)
+function renderGoals(roleId) {
+const grid = document.getElementById('goal-grid');
+grid.innerHTML = '';
+const roleGoals = goals[roleId] || [];
+
+```
+roleGoals.forEach(goal =&gt; {
+    const card = document.createElement(&#39;div&#39;);
+    card.className = &#39;selection-card&#39;;
+    card.onclick = () =&gt; selectGoal(goal.id);
+    card.innerHTML = `
+        &lt;div class=&quot;card-icon&quot;&gt;🎯&lt;/div&gt;
+        &lt;div class=&quot;card-text&quot;&gt;${goal.title}&lt;/div&gt;
+    `;
+    grid.appendChild(card);
+});
+
+```
+
 }
 
-function update(){
-  document.getElementById("ps").innerText=playerScore;
-  document.getElementById("as").innerText=aiScore;
+// Handle Goal Selection
+function selectGoal(goalId) {
+state.goal = goalId;
+state.step = 3;
+updateUI();
+renderResults();
 }
 
-function check(){
-  if(playerScore>=50){
-    alert("YOU WIN. AI outplayed.");
-    reset();
-  }
-  if(aiScore>=50){
-    alert("AI WINS. Pattern detected.");
-    reset();
-  }
+// Render Results (Step 3)
+function renderResults() {
+const container = document.getElementById('results-container');
+container.innerHTML = '';
+
+```
+const key = `${state.role}_${state.goal}`;
+const data = results[key] || [];
+
+if (data.length === 0) {
+    container.innerHTML = &#39;&lt;p&gt;No specific results found for this combination.&lt;/p&gt;&#39;;
+    return;
 }
 
-function reset(){
-  playerScore=0;
-  aiScore=0;
-  history=[];
-  update();
-  log.innerText="New round. AI recalibrated.";
+data.forEach(item =&gt; {
+    const card = document.createElement(&#39;div&#39;);
+    card.className = &#39;result-card fade-in&#39;;
+    card.innerHTML = `
+        &lt;div class=&quot;result-title&quot;&gt;${item.title}&lt;/div&gt;
+        &lt;div class=&quot;result-desc&quot;&gt;${item.desc}&lt;/div&gt;
+        &lt;a href=&quot;#&quot; class=&quot;tool-btn&quot; onclick=&quot;event.preventDefault(); alert(&#39;In a real app, this links to: &#39; + &#39;${item.tool}&#39;)&quot;&gt;Try ${item.tool}&lt;/a&gt;
+    `;
+    container.appendChild(card);
+});
+
+```
+
 }
+
+// Update UI States
+function updateUI() {
+// Hide all steps
+step1.classList.add('hidden');
+step2.classList.add('hidden');
+step3.classList.add('hidden');
+
+```
+// Reset Animation classes to re-trigger
+step1.classList.remove(&#39;fade-in&#39;);
+step2.classList.remove(&#39;fade-in&#39;);
+step3.classList.remove(&#39;fade-in&#39;);
+
+// Show current step
+if (state.step === 1) {
+    step1.classList.remove(&#39;hidden&#39;);
+    step1.classList.add(&#39;fade-in&#39;);
+    navBar.classList.add(&#39;hidden&#39;);
+} else if (state.step === 2) {
+    step2.classList.remove(&#39;hidden&#39;);
+    step2.classList.add(&#39;fade-in&#39;);
+    navBar.classList.remove(&#39;hidden&#39;);
+} else if (state.step === 3) {
+    step3.classList.remove(&#39;hidden&#39;);
+    step3.classList.add(&#39;fade-in&#39;);
+    navBar.classList.remove(&#39;hidden&#39;);
+}
+
+// Update Dots
+dots.forEach((dot, index) =&gt; {
+    if (index + 1 === state.step) {
+        dot.classList.add(&#39;active&#39;);
+    } else {
+        dot.classList.remove(&#39;active&#39;);
+    }
+});
+
+```
+
+}
+
+// Navigation
+function goBack() {
+if (state.step > 1) {
+state.step--;
+updateUI();
+}
+}
+
+function resetApp() {
+state.step = 1;
+state.role = null;
+state.goal = null;
+updateUI();
+}
+
+// Run
+init();
+
 </script>
+
 </body>
 </html>

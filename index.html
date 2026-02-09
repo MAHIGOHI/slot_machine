@@ -2,429 +2,637 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Decision Engine – Human-Safe System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Decision Engine</title>
     <style>
         :root {
-            --bg-core: #0b0d12;
-            --bg-card: #14171f;
-            --bg-card-hover: #1c202b;
-            --accent-primary: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.15);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --border-color: #2a2f3d;
-            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --primary: #2563EB;
+            --primary-dark: #1E40AF;
+            --secondary: #3B82F6;
+            --accent: #60A5FA;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;
+            --text-sub: #64748B;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --anim-speed: 0.4s;
         }
 
-        * {
-            box-sizing: border-box;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
             margin: 0;
             padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-core);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
             color: var(--text-main);
-            font-family: var(--font-family);
-            line-height: 1.6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
+            overflow-x: hidden;
         }
 
-        /* Typography */
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            letter-spacing: -0.02em;
-            background: linear-gradient(to right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Top Bar */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 20px 24px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            font-weight: 400;
-        }
+        h1 { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px; }
+        .subtitle { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; font-weight: 400; }
 
-        /* Grid Layout */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1000px;
-            margin-bottom: 40px;
-        }
-
-        /* Card Styles */
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
+        /* Main Container */
+        main {
+            flex: 1;
             padding: 24px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 140px;
         }
 
-        .card:hover {
-            transform: translateY(-4px);
-            background-color: var(--bg-card-hover);
-            border-color: var(--accent-primary);
-            box-shadow: 0 10px 30px -10px var(--accent-glow);
-        }
-
-        .card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
-        .card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at top right, var(--accent-glow), transparent 40%);
+        /* Cards & Transitions */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            animation: slideUp var(--anim-speed) cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: translateY(20px);
         }
 
-        .card:hover::before {
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: var(--text-sub);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .btn-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        button {
+            background: white;
+            border: 1px solid #E2E8F0;
+            padding: 18px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        button:active { transform: scale(0.98); }
+        
+        button:hover {
+            border-color: var(--primary);
+            background: #EFF6FF;
+            color: var(--primary-dark);
+        }
+
+        button::after {
+            content: "→";
+            opacity: 0.5;
+            transition: transform 0.2s;
+        }
+
+        button:hover::after {
+            transform: translateX(4px);
             opacity: 1;
         }
 
-        /* Result Section */
-        #result-container {
-            width: 100%;
-            max-width: 800px;
-            display: none; /* Hidden by default */
-            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
+        /* Result Specifics */
         .result-box {
-            background: linear-gradient(180deg, var(--bg-card) 0%, rgba(20, 23, 31, 0.6) 100%);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 40px;
+            border-left: 4px solid var(--primary);
+            padding: 0 0 0 20px;
+            margin: 24px 0;
         }
 
-        .result-header {
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
-            margin-bottom: 25px;
+        .result-label {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        .result-header h2 {
-            color: var(--accent-primary);
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+        .highlight-text {
+            color: var(--primary-dark);
+            font-weight: 600;
         }
 
-        .result-header .tag {
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            justify-content: center;
+            border: none;
+        }
+        
+        .action-btn:hover {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .action-btn::after { display: none; }
+
+        /* Thinking Animation */
+        .thinking-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .pulse-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse 1.5s infinite;
+            margin-bottom: 20px;
+        }
+
+        .thinking-text {
+            font-family: monospace;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(37, 99, 235, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+
+        .badge {
             display: inline-block;
             padding: 4px 12px;
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent-primary);
-            border-radius: 100px;
+            background: #EFF6FF;
+            color: var(--primary);
+            border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        /* Plan Structure */
-        .plan-step {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .step-number {
-            flex-shrink: 0;
-            width: 28px;
-            height: 28px;
-            background: var(--border-color);
-            color: var(--text-main);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
             font-weight: 700;
-            margin-top: 2px;
+            margin-bottom: 16px;
         }
 
-        .step-content h4 {
-            color: #fff;
-            margin-bottom: 5px;
-            font-size: 1rem;
-        }
+        .hidden { display: none !important; }
 
-        .step-content p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .action-block {
-            margin-top: 30px;
-            background: rgba(59, 130, 246, 0.05);
-            border: 1px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .action-block strong {
-            color: var(--accent-primary);
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-        }
-
-        /* Animations */
-        @keyframes slideUpFade {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-            .result-box {
-                padding: 24px;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <h1>AI Decision Engine — Human-Safe System</h1>
-    <p class="subtitle">Select what you want to build</p>
+    <header>
+        <h1>AI Decision Engine</h1>
+        <div class="subtitle">Structured thinking for humans.</div>
+    </header>
 
-    <div class="grid-container">
-        <div class="card" onclick="processDecision(1)">
-            <h3>Grow on Social Media</h3>
-            <p>Algorithmic strategy & content funnels.</p>
-        </div>
-        <div class="card" onclick="processDecision(2)">
-            <h3>Build a Business System</h3>
-            <p>Automation, SOPs, and scaling logic.</p>
-        </div>
-        <div class="card" onclick="processDecision(3)">
-            <h3>Learn AI from Zero</h3>
-            <p>From basics to LLM architecture.</p>
-        </div>
-        <div class="card" onclick="processDecision(4)">
-            <h3>Build AI Agents</h3>
-            <p>Autonomous loops and tool integration.</p>
-        </div>
+    <main id="app-container">
+        </main>
+
+    <div id="thinking-ui" class="thinking-overlay hidden">
+        <div class="pulse-circle"></div>
+        <div id="thinking-msg" class="thinking-text">Initializing logic core...</div>
     </div>
 
-    <div id="result-container">
-        <div class="result-box">
-            <div id="dynamic-content"></div>
-        </div>
-    </div>
+<script>
+    /**
+     * AI Decision Engine - Logic Core
+     * No APIs. Pure State Machine.
+     */
 
-    <script>
-        function processDecision(optionId) {
-            const container = document.getElementById('result-container');
-            const contentDiv = document.getElementById('dynamic-content');
-            
-            // Hide first to trigger re-animation if already open
-            container.style.display = 'none';
-            
-            let htmlContent = '';
+    // --- Data Structure ( The Brain ) ---
+    const ENGINE = {
+        home: {
+            title: "Select Your Objective",
+            desc: "The system will guide you through a logic tree to determine the optimal execution path for your specific constraints.",
+            options: [
+                { text: "Build a Business System", next: "business_start", context: "Analysis: Business Architecture" },
+                { text: "Grow on Social Media", next: "social_start", context: "Analysis: Audience Psychology" },
+                { text: "Learn AI from Zero", next: "learn_start", context: "Analysis: Curriculum Generation" },
+                { text: "Build AI Agents", next: "agent_start", context: "Analysis: Autonomous Systems" }
+            ]
+        },
+        
+        // --- Business Logic Path ---
+        business_start: {
+            title: "Current Asset Audit",
+            desc: "Business models are constraints-based. What is your primary unfair advantage right now?",
+            options: [
+                { text: "I have Capital (Money)", next: "biz_capital", context: "Asset: Capital Allocation" },
+                { text: "I have Skill (Time)", next: "biz_skill", context: "Asset: Service Economy" },
+                { text: "I have Nothing (Grit)", next: "biz_grit", context: "Asset: High Effort/Low Cost" }
+            ]
+        },
+        biz_capital: {
+            title: "Risk Tolerance Profile",
+            desc: "Capital allows leverage, but requires risk management. Choose your operational preference.",
+            options: [
+                { text: "Low Risk (Slow Compound)", next: "res_biz_invest", context: "Profile: Conservative" },
+                { text: "High Risk (Fast Scale)", next: "res_biz_ads", context: "Profile: Aggressive" }
+            ]
+        },
+        biz_skill: {
+            title: "Scalability Check",
+            desc: "You are trading time for money. How do you intend to break the linear income cap?",
+            options: [
+                { text: "Productize (Build once, sell twice)", next: "res_biz_product", context: "Mode: Productization" },
+                { text: "Agency (Hire others)", next: "res_biz_agency", context: "Mode: Delegation" }
+            ]
+        },
+        biz_grit: {
+            title: "Entry Vector",
+            desc: "Without money or skill, you must rely on arbitrage or volume.",
+            options: [
+                { text: "Content Arbitrage", next: "res_biz_content", context: "Vector: Attention" },
+                { text: "Service Arbitrage (Middleman)", next: "res_biz_drop", context: "Vector: Sales" }
+            ]
+        },
 
-            switch(optionId) {
-                case 1: // Grow on Social Media
-                    htmlContent = `
-                        <div class="result-header">
-                            <span class="tag">Audience Growth Protocol</span>
-                            <h2>The 'Hook-Retain-Reward' Engine</h2>
-                        </div>
-                        <div class="plan-body">
-                            <div class="plan-step">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Establish the Data Hook</h4>
-                                    <p>Do not rely on inspiration. Analyze top 10 posts in your niche. Extract the structural pattern of their first 3 seconds (video) or headline (text). Replicate the structure, not the content.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Velocity Editing</h4>
-                                    <p>Algorithms favor retention. Remove all silence >0.5s. Change visual state every 3-5 seconds (b-roll, zoom, text overlay). This maintains the dopamine loop necessary for algorithmic push.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>The Trust Mechanism</h4>
-                                    <p>Move traffic from 'Rent' (Social Feed) to 'Own' (Newsletter/Community). Offer a "High-Value Asset" (PDF, Template) in exchange for email. Social is for discovery; email is for conversion.</p>
-                                </div>
-                            </div>
-                            <div class="action-block">
-                                <strong>Immediate Execution:</strong>
-                                Post 1 piece of content daily for 30 days strictly adhering to a 70% Education / 30% Entertainment split. Review analytics weekly: kill what fails, double down on what works.
-                            </div>
-                        </div>
-                    `;
-                    break;
+        // --- Social Logic Path ---
+        social_start: {
+            title: "Content Archetype",
+            desc: "Growth fails when the medium fights the message. What is your natural communication style?",
+            options: [
+                { text: "Visual / Aesthetic", next: "soc_visual", context: "Type: Visual Cortex" },
+                { text: "Analytical / Text", next: "soc_text", context: "Type: Intellectual" },
+                { text: "Personality / Video", next: "soc_video", context: "Type: Parasocial" }
+            ]
+        },
+        soc_text: {
+            title: "Value Proposition",
+            desc: "Text audiences are high-intent but skeptical. What do you offer?",
+            options: [
+                { text: "Curated Insight (News/Lists)", next: "res_soc_curator", context: "Value: Time Saved" },
+                { text: "Deep Expertise (How-to)", next: "res_soc_educator", context: "Value: Skill Gained" }
+            ]
+        },
+        // (Simplified branches for brevity but functionally unique)
+        soc_visual: {
+            title: "Platform Dynamics",
+            desc: "Visuals require high velocity. Can you sustain daily output?",
+            options: [
+                { text: "Yes, I am fast", next: "res_soc_trend", context: "Strat: Volume" },
+                { text: "No, I prefer quality", next: "res_soc_asset", context: "Strat: Prestige" }
+            ]
+        },
+        soc_video: {
+            title: "Narrative Style",
+            desc: "Video is about retention.",
+            options: [
+                { text: "Educational / Stoic", next: "res_soc_edu_vid", context: "Tone: Trust" },
+                { text: "Entertainment / High Energy", next: "res_soc_ent_vid", context: "Tone: Dopamine" }
+            ]
+        },
 
-                case 2: // Build a Business System
-                    htmlContent = `
-                        <div class="result-header">
-                            <span class="tag">Operational Architecture</span>
-                            <h2>The Automated Value Chain</h2>
-                        </div>
-                        <div class="plan-body">
-                            <div class="plan-step">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Standardize Input (SOPs)</h4>
-                                    <p>A business cannot scale if processes rely on memory. Document every recurring task (Invoicing, Support, Outreach). Create a "Rulebook" that anyone can follow without asking you questions.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Decouple Time from Money</h4>
-                                    <p>Shift from Service-Based (selling hours) to Productized Service or SaaS. Define a specific outcome for a fixed price. Eliminate scope creep by strictly defining the deliverables upfront.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>The Automation Layer</h4>
-                                    <p>Connect your stack. Use Webhooks (Zapier/Make) to trigger actions. Example: New Stripe Payment → Send Invoice → Add to Slack Channel → Grant Course Access. Remove humans from the transaction flow.</p>
-                                </div>
-                            </div>
-                            <div class="action-block">
-                                <strong>Immediate Execution:</strong>
-                                Map your current workflow on a whiteboard. Circle the three tasks that consume 80% of your time. Write an SOP for one, Automate one, and Delegate one.
-                            </div>
-                        </div>
-                    `;
-                    break;
+        // --- AI Learning Path ---
+        learn_start: {
+            title: "Outcome Definition",
+            desc: "Why are you learning AI? The 'Why' dictates the 'How'.",
+            options: [
+                { text: "Career Pivot (Get Hired)", next: "learn_career", context: "Goal: Employment" },
+                { text: "Productivity (Do faster)", next: "res_learn_tools", context: "Goal: Efficiency" }
+            ]
+        },
+        learn_career: {
+            title: "Technical Depth",
+            desc: "Do you want to build the engine or drive the car?",
+            options: [
+                { text: "I like Code/Math", next: "res_learn_engineer", context: "Role: Engineer" },
+                { text: "I like Product/Logic", next: "res_learn_pm", context: "Role: Architect" }
+            ]
+        },
 
-                case 3: // Learn AI from Zero
-                    htmlContent = `
-                        <div class="result-header">
-                            <span class="tag">Competence Roadmap</span>
-                            <h2>AI Literacy to Engineering</h2>
-                        </div>
-                        <div class="plan-body">
-                            <div class="plan-step">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Phase 1: Prompt Engineering</h4>
-                                    <p>Master the context window. Learn Chain-of-Thought (CoT) prompting and Few-Shot prompting. Understand that the LLM is a completion engine, not a truth engine. Input quality dictates output quality.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Phase 2: API Integration</h4>
-                                    <p>Stop using the chat interface. Get an OpenAI or Anthropic API key. Learn to send JSON payloads via Python or Node.js. Understand 'temperature', 'tokens', and 'system roles'.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>Phase 3: RAG (Retrieval Augmented Generation)</h4>
-                                    <p>LLMs hallucinate. Solve this by connecting them to your own data (PDFs, Databases). Learn Vector Embeddings to search your data, retrieve relevant context, and feed it to the AI for accurate answers.</p>
-                                </div>
-                            </div>
-                            <div class="action-block">
-                                <strong>Immediate Execution:</strong>
-                                Build a simple script that takes a user question, searches a local text file for the answer, and uses the API to summarize it. This is the foundation of modern AI apps.
-                            </div>
-                        </div>
-                    `;
-                    break;
+        // --- AI Agents Path ---
+        agent_start: {
+            title: "System Complexity",
+            desc: "Agents are loops. How autonomous should this system be?",
+            options: [
+                { text: "Human-in-the-loop (Assistant)", next: "res_agent_assist", context: "Loop: Open" },
+                { text: "Fully Autonomous (Auto-GPT)", next: "agent_auto", context: "Loop: Closed" }
+            ]
+        },
+        agent_auto: {
+            title: "Safety Guardrails",
+            desc: "Autonomous agents hallucinate. How do you verify output?",
+            options: [
+                { text: "Code Execution Validator", next: "res_agent_code", context: "Guard: Deterministic" },
+                { text: "LLM Self-Correction", next: "res_agent_llm", context: "Guard: Probabilistic" }
+            ]
+        },
 
-                case 4: // Build AI Agents
-                    htmlContent = `
-                        <div class="result-header">
-                            <span class="tag">Autonomous Systems</span>
-                            <h2>The Agentic Loop Framework</h2>
-                        </div>
-                        <div class="plan-body">
-                            <div class="plan-step">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Define the Goal & Tools</h4>
-                                    <p>An agent is an LLM with hands. Define the objective (e.g., "Research this company"). Give it tools: Web Search API, Scraper, File Writer. The LLM decides <em>which</em> tool to use and <em>when</em>.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Implement the Thought Loop</h4>
-                                    <p>Code a recursive loop: <strong>Thought</strong> (What do I need to do?) → <strong>Action</strong> (Call Tool) → <strong>Observation</strong> (Read Tool Output). Repeat until the goal is met.</p>
-                                </div>
-                            </div>
-                            <div class="plan-step">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>Memory Management</h4>
-                                    <p>Agents forget. Implement Short-term memory (conversation history) and Long-term memory (Vector Database). Allow the agent to store successful strategies for future tasks.</p>
-                                </div>
-                            </div>
-                            <div class="action-block">
-                                <strong>Immediate Execution:</strong>
-                                Use a framework like LangChain or build a raw loop in Python. Create an agent that can search Google for the current weather and write a poem about it to a text file.
-                            </div>
-                        </div>
-                    `;
-                    break;
-            }
+        // --- RESULTS (Leaf Nodes) ---
+        // Business Results
+        res_biz_invest: {
+            type: "result",
+            title: "The 'Compounder' Strategy",
+            strategy: "Focus on Micro-SaaS Acquisition or Dividend Investing. You have capital but dislike risk.",
+            trap: "Avoid: Venture Capital & Crypto. You will panic sell.",
+            action: "Start researching 'SME Acquisition' marketplaces."
+        },
+        res_biz_ads: {
+            type: "result",
+            title: "The 'Paid Traffic' Engine",
+            strategy: "Use capital to buy data. Run Paid Ads to a High-Ticket Offer.",
+            trap: "Avoid: Organic growth. It's too slow for your capital burn rate.",
+            action: "Launch a Meta Ads test campaign ($50/day)."
+        },
+        res_biz_product: {
+            type: "result",
+            title: "The Digital Product Funnel",
+            strategy: "Package your skill into a Course, Template, or Tool.",
+            trap: "Avoid: 1-on-1 Consulting. It kills your ability to scale.",
+            action: "Draft your product outline today."
+        },
+        res_biz_agency: {
+            type: "result",
+            title: "The 'Drop-Service' Agency",
+            strategy: "Sell the outcome, hire contractors to fulfill the work.",
+            trap: "Avoid: Doing the work yourself. You are the sales engine now.",
+            action: "Write a job post for a contractor."
+        },
+        res_biz_content: {
+            type: "result",
+            title: "The 'Documentarian' Path",
+            strategy: "Document your journey of learning a skill publicly.",
+            trap: "Avoid: Acting like an expert. Be the 'Relatable Beginner'.",
+            action: "Post your 'Day 1' update."
+        },
+        res_biz_drop: {
+            type: "result",
+            title: "High-Ticket Closing",
+            strategy: "Find an existing business and sell their product for commission.",
+            trap: "Avoid: Building a website. You only need a phone and a script.",
+            action: "Contact 10 business owners."
+        },
 
-            // Inject Content
-            contentDiv.innerHTML = htmlContent;
+        // Social Results
+        res_soc_curator: {
+            type: "result",
+            title: "The Intelligence Filter",
+            strategy: "Newsletter Model. Aggregate noise, deliver signal.",
+            trap: "Avoid: Long opinion pieces initially. People want synthesis, not your diary.",
+            action: "Draft your first 'Top 5' list."
+        },
+        res_soc_educator: {
+            type: "result",
+            title: "The Authority Build",
+            strategy: "Twitter/LinkedIn Threads. Solve specific, painful problems.",
+            trap: "Avoid: Broad motivation. Be surgically specific.",
+            action: "Write 3 headlines solving one problem."
+        },
+        res_soc_trend: {
+            type: "result",
+            title: "The Trend Surfer",
+            strategy: "Instagram Reels / TikTok. Use trending audio + your niche overlay.",
+            trap: "Avoid: Perfectionism. Quantity is your quality filter.",
+            action: "Record 5 drafts in one hour."
+        },
+        res_soc_asset: {
+            type: "result",
+            title: "The Aesthetic Portfolio",
+            strategy: "Pinterest / IG Static. High fidelity visuals that inspire.",
+            trap: "Avoid: Chasing trends. Build a timeless visual language.",
+            action: "Create a moodboard."
+        },
+        res_soc_edu_vid: {
+            type: "result",
+            title: "The Video Essayist",
+            strategy: "YouTube Long Form. Deep dives into complex topics.",
+            trap: "Avoid: Clickbait that doesn't deliver. Retention is your metric.",
+            action: "Script your intro hook."
+        },
+        res_soc_ent_vid: {
+            type: "result",
+            title: "The Personality Brand",
+            strategy: "Shorts/Reels. High energy, cuts every 2 seconds.",
+            trap: "Avoid: Monotone delivery. Energy transfer is the product.",
+            action: "Practice speaking 20% louder."
+        },
 
-            // Trigger Display and Animation
-            container.style.display = 'block';
-            
-            // Smooth scroll to result
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Learn Results
+        res_learn_tools: {
+            type: "result",
+            title: "The AI-Augmented Human",
+            strategy: "Master Prompt Engineering & Workflow Automation (Zapier + OpenAI).",
+            trap: "Avoid: Learning Python. You don't need it. Focus on integration.",
+            action: "Automate one daily email task."
+        },
+        res_learn_engineer: {
+            type: "result",
+            title: "The ML Engineer Path",
+            strategy: "Math (Linear Algebra) -> Python -> PyTorch -> Transformers.",
+            trap: "Avoid: Jumping to LLMs without understanding Neural Net basics.",
+            action: "Start a 'Fast.ai' course."
+        },
+        res_learn_pm: {
+            type: "result",
+            title: "The AI Product Manager",
+            strategy: "Learn API capabilities, Fine-tuning economics, and UX for AI.",
+            trap: "Avoid: Getting lost in code. Focus on feasibility and user value.",
+            action: "Map out an AI feature spec."
+        },
+
+        // Agent Results
+        res_agent_assist: {
+            type: "result",
+            title: "Copilot Architecture",
+            strategy: "Build a system where the AI proposes, and the Human approves.",
+            trap: "Avoid: Giving the AI write-access to your database without review.",
+            action: "Design the 'Approval UI' flow."
+        },
+        res_agent_code: {
+            type: "result",
+            title: "Sandboxed Python Environment",
+            strategy: "Agent writes code -> System runs code in Docker -> Returns output.",
+            trap: "Avoid: Running generated code on your local machine root.",
+            action: "Set up a Docker sandbox."
+        },
+        res_agent_llm: {
+            type: "result",
+            title: "The Reflection Pattern",
+            strategy: "Agent Output -> Agent Critic (Review) -> Final Output.",
+            trap: "Avoid: Single-shot prompts for complex tasks. Use chain-of-thought.",
+            action: "Write a 'Critic' system prompt."
         }
-    </script>
+    };
+
+    // --- Logic Core ---
+
+    const App = {
+        container: document.getElementById('app-container'),
+        loader: document.getElementById('thinking-ui'),
+        loaderMsg: document.getElementById('thinking-msg'),
+        history: [],
+
+        init: function() {
+            this.renderNode('home');
+        },
+
+        // Fake AI Thinking
+        think: function(callback, contextMsg) {
+            this.loader.classList.remove('hidden');
+            
+            const messages = [
+                "Analyzing inputs...",
+                "Calculating probabilities...",
+                "Structuring logic tree...",
+                "Filtering noise...",
+                "Optimizing constraints...",
+                contextMsg || "Processing..."
+            ];
+
+            let msgIndex = 0;
+            this.loaderMsg.innerText = messages[0];
+            
+            // Randomize thinking time between 800ms and 1500ms
+            const delay = Math.floor(Math.random() * 700) + 800;
+
+            // Flash text logic
+            const interval = setInterval(() => {
+                msgIndex = (msgIndex + 1) % messages.length;
+         this.loaderMsg.innerText = messages[msgIndex];
+            }, 400);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                this.loader.classList.add('hidden');
+                callback();
+            }, delay);
+        },
+
+        // Render a Question or Result
+        renderNode: function(nodeId) {
+            const data = ENGINE[nodeId];
+            if (!data) return console.error("Node not found:", nodeId);
+
+            if (data.type === "result") {
+                this.renderResult(data);
+            } else {
+                this.renderQuestion(data);
+            }
+        },
+
+        renderQuestion: function(data) {
+            let optionsHtml = '';
+            
+            data.options.forEach(opt => {
+                optionsHtml += `
+                    <button onclick="App.handleChoice('${opt.next}', '${opt.context}')">
+                        ${opt.text}
+                    </button>
+                `;
+            });
+
+            const html = `
+                <div class="card">
+                    <div class="badge">DECISION NODE</div>
+                    <div class="section-title">${data.title}</div>
+                    <div class="section-desc">${data.desc}</div>
+                    <div class="btn-grid">
+                        ${optionsHtml}
+                    </div>
+                </div>
+                ${this.history.length > 0 ? `<div style="text-align:center; margin-top:20px; font-size:0.8rem; color:#94a3b8; cursor:pointer" onclick="App.reset()">Start Over</div>` : ''}
+            `;
+
+            this.container.innerHTML = html;
+        },
+},
+
+        renderResult: function(data) {
+            const html = `
+                <div class="card" style="border-top: 4px solid var(--primary)">
+                    <div class="badge" style="background:var(--primary); color:white">OPTIMAL PATH FOUND</div>
+                    <div class="section-title">${data.title}</div>
+                    
+                    <div class="result-box">
+                        <div class="result-label">The Strategy</div>
+                        <div class="section-desc" style="margin-bottom:0">${data.strategy}</div>
+                    </div>
+
+                    <div class="result-box" style="border-color: #EF4444">
+                        <div class="result-label" style="color: #EF4444">The Trap (Safety Protocol)</div>
+                        <div class="section-desc" style="margin-bottom:0">${data.trap}</div>
+                    </div>
+
+                    <div class="result-box" style="border-color: #10B981">
+                        <div class="result-label" style="color: #10B981">Immediate Action</div>
+                        <div class="section-desc" style="margin-bottom:0; font-weight:600">${data.action}</div>
+                    </div>
+
+                    <div class="btn-grid" style="margin-top:32px">
+                        <button class="action-btn" onclick="App.reset()">
+                            INITIALIZE NEW SESSION
+                        </button>
+                    </div>
+                </div>
+            `;
+            this.container.innerHTML = html;
+        },
+
+        handleChoice: function(nextNodeId, context) {
+            this.history.push(context);
+            
+            // Trigger thinking with context
+            const thinkMsg = `Integrating: ${context.split(':')[1] || 'User Selection'}`;
+            
+            this.think(() => {
+                this.renderNode(nextNodeId);
+            }, thinkMsg);
+        },
+
+        reset: function() {
+            this.history = [];
+            this.think(() => {
+                this.renderNode('home');
+            }, "Clearing session memory...");
+        }
+    };
+
+    // Start Engine
+    window.onload = function() {
+        App.init();
+    };
+
+</script>
 </body>
 </html>

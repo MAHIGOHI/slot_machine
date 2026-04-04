@@ -1,1 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="SN PIXEL Ecosystem. Discover AI Store, explore 1000+ curated AI tools, generate smart prompts, find remote tech jobs, and read daily AI news.">
+    <meta name="keywords" content="SN PIXEL, AI Store, AI Tools, Prompt Generator, Artificial Intelligence, Remote Tech Jobs, AI News, Mahi Gohil, Premium AI App, Coding, Tech Ecosystem">
+    <meta name="author" content="Mahi Gohil">
+    <meta name="robots" content="index, follow">
+    
+    <title>SN PIXEL - Build, Learn, Evolve</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #f8f9fc;
+            --surface-color: #ffffff;
+            --text-main: #1a1e29;
+            --text-muted: #64748b;
+            --primary-accent: #2563eb;
+            --primary-hover: #1d4ed8;
+            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Subtle Background Decoration */
+        .bg-shape {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37,99,235,0.05) 0%, rgba(255,255,255,0) 70%);
+            top: -200px;
+            left: -200px;
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding-top: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #1a1e29, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Hero App Section */
+        .hero-app {
+            background: var(--surface-color);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.8);
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .hero-app h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .hero-app p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--text-main);
+            color: #ffffff;
+            box-shadow: 0 10px 20px rgba(26, 30, 41, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(26, 30, 41, 0.25);
+            background-color: #000000;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-main);
+            transform: translateY(-3px);
+        }
+
+        .social-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .social-chip:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(220, 39, 67, 0.2);
+        }
+
+        /* Ecosystem Section */
+        .ecosystem-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            animation: fadeInUp 0.8s ease 0.6s backwards;
+        }
+
+        .card {
+            background: var(--surface-color);
+            padding: 30px;
+            border-radius: 24px;
+            text-decoration: none;
+            color: var(--text-main);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            border-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .card-icon.fb { color: #1877F2; }
+        .card-icon.yt { color: #FF0000; }
+        .card-icon.web { color: var(--primary-accent); }
+
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Contact Section */
+        .contact-wrapper {
+            text-align: center;
+            margin-top: 10px;
+            animation: fadeInUp 0.8s ease 0.8s backwards;
+        }
+
+        .contact-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            background: var(--surface-color);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .contact-chip i {
+            color: var(--primary-accent);
+            font-size: 1.2rem;
+        }
+
+        .contact-chip:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.15);
+            color: var(--primary-accent);
+            border-color: rgba(37, 99, 235, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0 20px 0;
+            color: var(--text-muted);
+            font-weight: 500;
+            animation: fadeIn 1s ease 1s backwards;
+        }
+
+        footer i {
+            color: #ef4444;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.8rem; }
+            .hero-app { padding: 40px 20px; }
+            .hero-app h2 { font-size: 2.2rem; }
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shape"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1>SN PIXEL</h1>
+            <p>Build • Learn • Evolve</p>
+        </header>
+
+        <section class="hero-app">
+            <h2>AI Store 🔥</h2>
+            <p>Discover 1000+ AI tools, craft smart prompts, find tech jobs & read daily news in one premium workspace.</p>
+            
+            <div class="btn-group">
+                <a href="https://play.google.com/store/apps/details?id=com.snpixel.aistore" target="_blank" class="btn btn-primary">
+                    <i class="fab fa-google-play"></i> Get on Play Store
+                </a>
+                <a href="https://aistore.apk.com/" target="_blank" class="btn btn-outline">
+                    <i class="fas fa-download"></i> Download APK
+                </a>
+            </div>
+
+            <a href="https://www.instagram.com/_ai.store__?igsh=MWN2Y3Z4NWFrY2hjbA==" target="_blank" class="social-chip">
+                <i class="fab fa-instagram"></i> Follow _ai.store__
+            </a>
+        </section>
+
+        <h2 class="ecosystem-title">Explore Our Ecosystem</h2>
+        <div class="grid">
+            
+            <a href="https://aiinfo.snpixel.world/" target="_blank" class="card">
+                <div class="card-icon web">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>AI Info Tech</h3>
+                <p>Official Website</p>
+            </a>
+
+            <a href="https://www.facebook.com/share/16bLTZBJvR/" target="_blank" class="card">
+                <div class="card-icon fb">
+                    <i class="fab fa-facebook"></i>
+                </div>
+                <h3>AI Information</h3>
+                <p>Facebook Community</p>
+            </a>
+
+            <a href="https://youtube.com/@void_talks_0?si=v5eQJAyTbhy6vRRk" target="_blank" class="card">
+                <div class="card-icon yt">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <h3>VOID TALKS</h3>
+                <p>YouTube Channel</p>
+            </a>
+
+            <a href="https://youtube.com/@mdgujarati_5096?si=MAlWdcjogvbiy_cD" target="_blank" class="card">
+                <div class="card-icon yt">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <h3>MD GUJARATI</h3>
+                <p>YouTube Channel</p>
+            </a>
+
+        </div>
+
+        <div class="contact-wrapper">
+            <h2 class="ecosystem-title" style="font-size: 1.6rem; margin-bottom: 20px;">Get In Touch</h2>
+            <a href="mailto:snpixel002@gmail.com" class="contact-chip">
+                <i class="fas fa-envelope"></i> snpixel002@gmail.com
+            </a>
+        </div>
+
+        <footer>
+            <p>Made with <i class="fas fa-heart"></i> by Mahi Gohil</p>
+        </footer>
+    </div>
+
+</body>
+</html>
